@@ -58,7 +58,7 @@
                                         <i class="fa fa-user">
                                         </i>
                                     </div>
-                                    <input id="Name" name="Name" type="text" placeholder="Name" class="form-control input-md">
+                                    <input id="Name" name="Name" type="text" placeholder="Name" class="form-control input-md" required>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +71,20 @@
                                         <i class="fa fa-user">
                                         </i>
                                     </div>
-                                    <input id="Adress" name="Adress" type="text" placeholder="Adress" class="form-control input-md">
+                                    <input id="Adress" name="Adress" type="text" placeholder="Adress" class="form-control input-md" required>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="Adress">Adress</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-user">
+                                        </i>
+                                    </div>
+                                    <input id="City" name="City" type="text" placeholder="City" class="form-control input-md" required>
                                 </div>
                             </div>
                         </div>
@@ -84,13 +97,8 @@
                                 <a href="#" class="btn btn-danger" value=""><span class="glyphicon glyphicon-remove-sign"></span> Clear</a>
                             </div>
                         </div>
-
-
                     </fieldset>
                 </form>
-                <div class="text-right">
-                    <a href="#">View All Transactions <i class="fa fa-arrow-circle-right"></i></a>
-                </div>
             </div>
         </div>
     </div>

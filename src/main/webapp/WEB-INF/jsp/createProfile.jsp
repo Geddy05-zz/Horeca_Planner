@@ -1,19 +1,33 @@
 <%--
   Created by IntelliJ IDEA.
   User: Geddy
-  Date: 23-2-2017
-  Time: 14:59
+  Date: 15-3-2017
+  Time: 14:34
   To change this template use File | Settings | File Templates.
 --%>
-<%@ include file="/layout/header.jsp" %>
-<%--<jsp:include page="/layout/header.jsp"/>--%>
-    <div class="row">
-        <div class="col-md-10 ">
-            <form class="form-horizontal" method="POST">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Bootstrap Core CSS -->
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="/css/sb-admin.css" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="/css/plugins/morris.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+<div class="row">
+    <div class="col-md-12 ">
+        <form class="form-horizontal" method="POST">
             <fieldset>
 
                 <!-- Form Name -->
-                <legend>User profile form requirement</legend>
+                <legend style="text-align: center"><h2>Create your user profile for the horeca planner</h2></legend>
 
                 <!-- Text input-->
                 <div class="form-group">
@@ -28,6 +42,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Text input-->
                 <div class="form-group">
                     <label class="col-md-4 control-label" for="Date Of Birth">Date Of Birth</label>
@@ -107,7 +122,7 @@
                                 <i class="fa fa-envelope-o"></i>
                             </div>
                             <input id="Email Address" name="Email Address" type="text" placeholder="Email Address"
-                                   class="form-control input-md">
+                                   class="form-control input-md" value="${person.mainEmail}">
                         </div>
                     </div>
                 </div>
@@ -132,9 +147,7 @@
 
             </fieldset>
         </form>
-        </div>
     </div>
 </div>
-
-<%@ include file="/layout/footer.jsp" %>
-<%--<jsp:include page="/layout/footer.jsp"/>--%>
+</div>
+</div>

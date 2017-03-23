@@ -11,6 +11,11 @@
     <properties>
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <INSTANCE_CONNECTION_NAME>horecaplanner-159312:europe-west1:horecaplanner</INSTANCE_CONNECTION_NAME>
+        <user>root</user>
+        <password>cPDx6Btlkk3tLseu</password>
+        <database>salesData</database>
     </properties>
 
     <prerequisites>
@@ -79,6 +84,25 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+
+        <dependency> <!-- ONLY USED LOCALY -->
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.40</version>  <!-- v5.x.x is Java 7, v6.x.x is Java 8 -->
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>mysql-socket-factory</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <!-- csv parser -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>3.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

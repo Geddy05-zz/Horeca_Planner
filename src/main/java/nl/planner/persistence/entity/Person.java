@@ -27,6 +27,7 @@ public class Person {
     private String primaryPhone ="";
     private String overview="";
     private String address = "";
+    private Boolean isActivated = false;
 
     public List<Long> getLocationKeys() {
         return locationKeys;
@@ -57,6 +58,15 @@ public class Person {
     public String getMainEmail() {
         return mainEmail;
     }
+
+    public Boolean getActivated() {
+        return isActivated;
+    }
+
+    public void activateAccount(){
+        this.isActivated = true;
+    }
+
 
     public void update(String name ,String dateOfBirth , String gender ,String address ,String primaryPhone ,
                        String secondaryPhone ,String overview){

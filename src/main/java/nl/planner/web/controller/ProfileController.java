@@ -3,6 +3,7 @@ package nl.planner.web.controller;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import nl.planner.MailService;
 import nl.planner.persistence.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,5 +61,42 @@ public class ProfileController {
         model.addAttribute("person",HomeController.getPersonFromUser(user,userId));
 
         return "profile";
+    }
+
+    @RequestMapping(value = "/createProfile", method = RequestMethod.GET)
+    public String createProfilePage(HttpServletRequest request, Model model) {
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        String userId = user.getUserId();
+        String email = user.getEmail();
+        Person person = new Person(userId, email,email);
+
+        model.addAttribute("person",person);
+        return "createProfile";
+    }
+
+    @RequestMapping(value = "/createProfile", method = RequestMethod.POST)
+    public String createProfile(HttpServletRequest request, Model model) {
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        String userId = user.getUserId();
+        String email = user.getEmail();
+        Person person = new Person(userId, email,email);
+
+        String name = request.getParameter("Name (Full name)");
+        String dateOfBirth = request.getParameter("Date Of Birth");
+        String gender = request.getParameter("Gender");
+        String address = request.getParameter("Permanent Address");
+        String primaryPhone = request.getParameter("Phone number");
+        String secondaryPhone = request.getParameter("Secondary Phone number");
+        String overview = request.getParameter("Overview (max 200 words)");
+
+        person.update(name,dateOfBirth,gender,address,primaryPhone,secondaryPhone,overview);
+        ofy().save().entity(person).now();
+        String baseUrl = request.getServerName();
+        MailService.sendRegistrationMail(person ,baseUrl);
+
+        return "redirect:/dashboard";
+
     }
 }

@@ -8,10 +8,10 @@
     <bean id="bootStrap" class="nl.planner.boot.Bootstrap" init-method="init"/>
 
     <!--Service-->
-    <context:component-scan base-package="nl.planner.service"/>
+    <!--<context:component-scan base-package="nl.planner.service"/>-->
 
     <!--Persistence-->
-    <bean id="eventDao" class="nl.planner.persistence.dao.ExampleDao"/>
+    <!--<bean id="eventDao" class="nl.planner.persistence.dao.ExampleDao"/>-->
 
 
 </beans>
