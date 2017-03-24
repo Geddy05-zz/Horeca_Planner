@@ -18,6 +18,8 @@
         <property name = "suffix" value = ".jsp" />
     </bean>
 
+    <bean id="locationDOA" class="nl.planner.persistence.Doa.LocationDOA" autowire="byName"/>
+    <bean id="personDOA" class="nl.planner.persistence.Doa.PersonDOA" autowire="byName"/>
     <mvc:resources mapping = "/pages/**" location = "/WEB-INF" />
     <mvc:annotation-driven/>
 

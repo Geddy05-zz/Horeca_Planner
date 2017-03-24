@@ -2,17 +2,15 @@ package nl.planner.boot;
 
 import com.googlecode.objectify.ObjectifyService;
 import nl.planner.persistence.entity.DailySales;
+import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.entity.Person;
 import nl.planner.persistence.entity.Location;
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 
 import javax.servlet.ServletException;
 import java.sql.*;
-import java.util.Date;
-
-import static java.lang.System.out;
 
 public class Bootstrap {
 
@@ -54,14 +52,15 @@ public class Bootstrap {
     }
 
     private void createSalesTable() throws ServletException {
-        final String createTableSql = "CREATE TABLE IF NOT EXISTS "+databaseName+" ( ID FLOAT NOT NULL AUTO_INCREMENT,location_key VARCHAR(255) NOT NULL "
+        final String createTableSql = "CREATE TABLE IF NOT EXISTS "+databaseName
+                +" ( ID FLOAT NOT NULL AUTO_INCREMENT,location_key VARCHAR(255) NOT NULL "
                 + ", sales DOUBLE NOT NULL, timestamp DATETIME NOT NULL, weekday INT NOT NULL,"
                 + "residues DOUBLE NOT NULL, is_holiday BOOLEAN, temperature INT NOT NULL,"
                 + "PRIMARY KEY (ID) )";
 
         try (Connection conn = DriverManager.getConnection(getUrl());) {
             conn.createStatement().executeUpdate(createTableSql);
-
+            conn.close();
         } catch (SQLException e) {
             throw new ServletException("SQL error", e);
         }

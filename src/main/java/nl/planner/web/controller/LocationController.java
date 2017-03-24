@@ -7,7 +7,9 @@ import com.googlecode.objectify.Key;
 import com.opencsv.CSVReader;
 import nl.planner.boot.Bootstrap;
 import nl.planner.machineLearning.LinearRegression;
+import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.entity.Person;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.googlecode.objectify.ObjectifyService.factory;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import nl.planner.persistence.entity.* ;
 
@@ -30,6 +31,9 @@ import java.util.logging.Logger;
 
 @Controller
 public class LocationController {
+
+    @Autowired
+    LocationDOA locationDOA;
 
     private UserService userService = UserServiceFactory.getUserService();
     private static final Logger logger = Logger.getLogger(LocationController.class.getName());
@@ -62,17 +66,8 @@ public class LocationController {
         String adress = request.getParameter("Adress");
         String city = request.getParameter("City");
 
-        Key<Person> personKey = Key.create(Person.class,userId);
-        final Key<Location> locationKey = factory().allocateId(personKey,Location.class);
-        final long locationId = locationKey.getId();
-
-        Person person = HomeController.getPersonFromUser(user, user.getUserId());
-        Location location = new Location(locationId,userId,name,adress, city);
-
-        person.addLocationKeys(locationId);
-        ofy().save().entities(person,location).now();
-
-        List<Location> locations = ofy().load().type(Location.class).ancestor(Key.create(Person.class, userId)).list();
+        locationDOA.createLocation(user,name,adress,city);
+        List<Location> locations = locationDOA.listOfLocations(user);
 
         model.addAttribute("locations",locations);
         return "locations";
@@ -87,10 +82,8 @@ public class LocationController {
 
         List<String[]> forecastMap = doTES();
 
-        // TODO: create function that returns a location.
         User user = userService.getCurrentUser();
-        Person person = HomeController.getPersonFromUser(user, user.getUserId());
-        Location location = ofy().load().type(Location.class).parent(person).id(Long.parseLong(locationId)).now();
+        Location location = locationDOA.getLocationFromId(user,locationId);
 
         model.addAttribute("forecast",forecastMap);
         model.addAttribute("location",location);
@@ -143,6 +136,7 @@ public class LocationController {
                 +" (timestamp,sales, weekday, is_holiday,temperature,residues,location_key)"+
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+        // set right parameters to query.
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
             statementCreateVisit.setDouble(2,sales);
@@ -153,6 +147,7 @@ public class LocationController {
             statementCreateVisit.setDouble(6,rain);
             statementCreateVisit.setString(7,key);
             statementCreateVisit.executeUpdate();
+            conn.close();
         } catch (SQLException e) {
             logger.info("SQL error: "+e.toString());
         }
@@ -195,14 +190,18 @@ public class LocationController {
                                                 ArrayList<Double> salesNumbers,
                                                 ArrayList<Date> dateList){
 
-        List<String[]> forecastMap = new ArrayList<String[]>();
+        List<String[]> forecastMap = new ArrayList<>();
         Calendar c = Calendar.getInstance();
         c.setTime(dateList.get(dateList.size() -1));
         for(int i = 0; i < forecast.length; i++){
             String[] map = new String[3];
+
+            // if not predicted set date and sales.
             if(i < salesNumbers.size() -1){
                 map[0] = formatter.format(dateList.get(i));
                 map[1] = salesNumbers.get(i).toString();
+
+            // We forecasting create a date.
             }else{
                 c.add(Calendar.DATE,1);
                 map[0] = formatter.format(c.getTime());
