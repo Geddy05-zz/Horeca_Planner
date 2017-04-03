@@ -6,8 +6,10 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Key;
 import com.opencsv.CSVReader;
 import nl.planner.boot.Bootstrap;
+import nl.planner.boot.SQLDatabase;
 import nl.planner.machineLearning.LinearRegression;
 import nl.planner.persistence.Doa.LocationDOA;
+import nl.planner.persistence.Doa.PersonDOA;
 import nl.planner.persistence.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,10 +39,11 @@ public class LocationController {
 
     private UserService userService = UserServiceFactory.getUserService();
     private static final Logger logger = Logger.getLogger(LocationController.class.getName());
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequestMapping(value = "/locations", method = RequestMethod.GET)
     public String location(HttpServletRequest request, Model model){
+
         if (request.getUserPrincipal() == null){
             return "redirect:/";
         }
@@ -55,18 +58,19 @@ public class LocationController {
 
     @RequestMapping(value = "/locations", method = RequestMethod.POST)
     public String addLocation(HttpServletRequest request, Model model){
+
         if (request.getUserPrincipal() == null){
             return "redirect:/";
         }
+
         User user = userService.getCurrentUser();
-        String userId = userService.getCurrentUser().getUserId();
-        model.addAttribute("person",HomeController.getPersonFromUser(user,userId));
+        model.addAttribute("person", PersonDOA.getPersonFromUser(user));
 
         String name = request.getParameter("Name");
-        String adress = request.getParameter("Adress");
+        String address = request.getParameter("Adress");
         String city = request.getParameter("City");
 
-        locationDOA.createLocation(user,name,adress,city);
+        locationDOA.createLocation(user,name,address,city);
         List<Location> locations = locationDOA.listOfLocations(user);
 
         model.addAttribute("locations",locations);
@@ -100,11 +104,12 @@ public class LocationController {
         List myEntries = reader.readAll();
         Boolean header = true;
 
-        //ToDo clean this ugly code
+        // Read csv and store the values in the SQL datastore
         for(int i = 0; i < myEntries.size(); i++){
             String[] l = (String[])myEntries.get(i);
             if(l.length > 1)  {
                 if(!header) {
+
                     //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather
 
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -129,7 +134,8 @@ public class LocationController {
 
     private void storeSalesItem( Date date, float sales, int weekday,
                                  Boolean holiday, int temp, float rain, String key){
-        String url = Bootstrap.getUrl();
+
+        String url = SQLDatabase.getUrl();
         //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather
 
         final String createVisitSql = "INSERT INTO "+Bootstrap.databaseName
@@ -153,8 +159,15 @@ public class LocationController {
         }
     }
 
-    private List<String[]> doTES(){
-        String url = Bootstrap.getUrl();
+
+    /**
+     * Function get data dales data from the sql datastore.
+     * Calls the Tripple exponential smoothing method with the data from sql datastore
+     *
+     * @return list with predicated sales values and real sales values
+     */
+    protected static List<String[]> doTES(){
+        String url = SQLDatabase.getUrl();
         final String getSalesDataQuery = "SELECT * From "+Bootstrap.databaseName;
 
         List<String[]> forecastMap = new ArrayList<String[]>();
@@ -177,6 +190,7 @@ public class LocationController {
             Double[] data = salesNumbers.toArray(forecast);
 
             // Do Triple exponential smoothing
+            //TODO: develop a function that optimize the parameters for LinearRegression
             forecast = LinearRegression.forecast(data, 0.1,0.6,0.3,7,30);
             forecastMap = formatForecastOutput(forecast,salesNumbers,dateList);
 
@@ -186,7 +200,7 @@ public class LocationController {
         return forecastMap;
     }
 
-    private List<String[]> formatForecastOutput(Double[] forecast,
+    private static List<String[]> formatForecastOutput(Double[] forecast,
                                                 ArrayList<Double> salesNumbers,
                                                 ArrayList<Date> dateList){
 

@@ -6755,3 +6755,10 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+.spinner {
+  margin-top: 200px; /* half height of the spinner gif */
+  text-align:center;
+  z-index:1234;
+  width: 200px; /* width of the spinner gif */
+  height: 204px; /*hight of the spinner gif +2px to fix IE8 issue */
+}

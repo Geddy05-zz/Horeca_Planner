@@ -42,6 +42,7 @@ public class Person {
     private Person() {}
 
     public Person(String userId, String displayName, String mainEmail) {
+
         this.userId = userId;
         this.displayName = displayName;
         this.mainEmail = mainEmail;
@@ -70,6 +71,7 @@ public class Person {
 
     public void update(String name ,String dateOfBirth , String gender ,String address ,String primaryPhone ,
                        String secondaryPhone ,String overview){
+
         this.displayName = name;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
@@ -84,6 +86,7 @@ public class Person {
     }
 
     public String getDateOfBirth() {
+
         return dateOfBirth;
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
  * Created by Geddy on 10-3-2017.
  */
 
+// Do we really need this ?????
 @Entity
 public class DailySales {
 
@@ -31,9 +32,9 @@ public class DailySales {
     private boolean isHoliday;
     private int temperature;
 
-    private DailySales(){}
 
     public DailySales(final long id,Long locationId, Date date,double sales, double residues, boolean isHoliday,int temperature){
+
         this.locationKey = Key.create(Location.class,locationId);
         this.id = id;
         this.sales = sales;

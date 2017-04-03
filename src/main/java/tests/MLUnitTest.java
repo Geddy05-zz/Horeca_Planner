@@ -5,9 +5,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.junit.After;
 import org.junit.Before;
 
-/**
- * Created by Geddy on 10-3-2017.
- */
 public class MLUnitTest {
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()

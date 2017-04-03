@@ -4,42 +4,35 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Key;
+import nl.planner.boot.WeatherRequest;
+import nl.planner.persistence.Doa.LocationDOA;
+import nl.planner.persistence.Doa.PersonDOA;
+import nl.planner.persistence.entity.Location;
 import nl.planner.persistence.entity.Person;
-import org.springframework.beans.factory.annotation.Autowired;
+import nl.planner.persistence.entity.Weather;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import java.util.*;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.*;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Logger;
-
 import static com.googlecode.objectify.ObjectifyService.ofy;
-import static java.lang.System.out;
-
-/**
- * Created by Geddy on 8-3-2017.
- */
 
 @Controller
 public class HomeController {
     private static final Logger logger = Logger.getLogger(HomeController.class.getName());
 
     @RequestMapping(value = "/")
-    public String home(HttpServletRequest request,Locale locale, Model model) {
+    public String home(HttpServletRequest request, Model model) {
+
         if (request.getUserPrincipal() != null) {
             return "redirect:dashboard";
-        } else {
+        }
+        else {
             String thisUrl = request.getRequestURI()+ "login";
             UserService userService = UserServiceFactory.getUserService();
 
@@ -55,18 +48,25 @@ public class HomeController {
         return "home";
     }
 
+    @RequestMapping(value = "/getSales")
+    public  @ResponseBody List<Location> getLocations() {
+        UserService userService = UserServiceFactory.getUserService();
+        return LocationDOA.listOfLocations(userService.getCurrentUser());
+    }
+
+
     @RequestMapping(value = "/logout")
-    public String logout(Locale locale, Model model) {
+    public String logout() {
+
         UserService userService = UserServiceFactory.getUserService();
         String redirectUrl = userService.createLogoutURL("/");
-//        model.addAttribute("message", message);
 
         return "redirect:" + redirectUrl;
     }
 
     @RequestMapping(value = "/login")
-    public String login(Locale locale, Model model) {
-        logger.info("Login done");
+    public String login() {
+
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
         String userId = user.getUserId();
@@ -82,6 +82,7 @@ public class HomeController {
 
     @RequestMapping(value = "/activate/{userId}")
     public String activateProfile(@PathVariable String userId,HttpServletRequest request) {
+
         logger.info(userId);
         Person profile = ofy().load().key(
                 Key.create(Person.class, userId)).now();
@@ -98,37 +99,31 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/dashboard")
-    public String dashboard(HttpServletRequest request, Model model) {
+    public String dashboard(HttpServletRequest request, Model model) throws Exception {
+
         if (request.getUserPrincipal() == null){
             return "redirect:/";
         }
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
-        String userId = user.getUserId();
-        Person person = getPersonFromUser(user,userId);
+
+        Person person = PersonDOA.getPersonFromUser(user);
 
         if (! person.getActivated()){
             return "redirect:/logout";
         }
+        List<String[]> forecastMap = LocationController.doTES();
 
         ofy().save().entity(person).now();
 
+        List< Weather>  weather = new WeatherRequest().getWeather(52.092876,5.104480);
+
         String message = userService.createLogoutURL("/");
         model.addAttribute("message", message);
+        model.addAttribute("locations",LocationDOA.listOfLocations(user));
+        model.addAttribute("weatherForecast",weather);
+        model.addAttribute("forecast",forecastMap);
 
         return "dashboard";
-    }
-
-    //ToDo: change location of this function
-    public static Person getPersonFromUser(User user, String userId) {
-        // First fetch it from the datastore.
-        Person profile = ofy().load().key(
-                Key.create(Person.class, userId)).now();
-        if (profile == null) {
-            // Create a new Profile if not exist.
-            String email = user.getEmail();
-            profile = new Person(userId, email,email);
-        }
-        return profile;
     }
 }
