@@ -102,6 +102,15 @@
                         Select a date
                         <input type="text" id="datepicker"></p>
                     </div>
+                    <br />
+                    <p>
+                    <h3>Number of employees needed based on sales: </h3> <br/>
+
+                        Waiters : <div id="waiters_needed"></div><br/>
+                        Barkeerpers: <div id="barkeepers_needed"></div><br/>
+                        Kitchen: <div id="kitchen_needed"></div><br/>
+                    </p>
+                    <h3> week overview employees needed:</h3>
                     <div id="morris-sales-chart"></div>
                     <div class="text-right">
                         <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
@@ -213,7 +222,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-16">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i> Weather</h3>
@@ -255,13 +264,13 @@
                             </tr>
                             <tr>
                                 <td>rain probability</td>
-                                <td style="text-align: center"><%= weather.get(0).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(1).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(2).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(3).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(4).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(5).getRainProbability()%></td>
-                                <td style="text-align: center"><%= weather.get(6).getRainProbability()%></td>
+                                <td style="text-align: center"><%= (int) (weather.get(0).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(1).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(2).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(3).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(4).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(5).getRainProbability() * 100) %> %</td>
+                                <td style="text-align: center"><%= (int) (weather.get(6).getRainProbability() * 100) %> %</td>
                             </tr>
                             <tr>
                                 <td>rainfall</td>

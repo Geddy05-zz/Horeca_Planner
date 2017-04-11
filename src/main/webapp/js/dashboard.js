@@ -1,10 +1,18 @@
-/**
- * Created by Geddy on 27-3-2017.
- */
-$( function() {
-    $( "#datepicker" ).datepicker({ defaultDate: new Date()});
-    // drawSalesGraph()
-} );
+
+
+$("#datepicker").datepicker({
+    dateFormat: "yy-mm-dd",
+    onSelect: function (dateText) {
+        $.ajax({
+            url: '/getEmployeeDemand/'+dateText.toString(),
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                showEmployeesNeeded(data);
+            }
+        })
+    }
+});
 
 $.ajax({
     url: '/getSales',
@@ -14,6 +22,15 @@ $.ajax({
         // drawSalesGraph();
     }
 });
+
+function showEmployeesNeeded(json){
+    console.log(json);
+
+    $("#waiters_needed").text(json.waiters);
+    $("#barkeepers_needed").text(json.barkeepers);
+    $("#kitchen_needed").text(json.kitchen);
+
+}
 
 function drawSalesGraph(){
     new Morris.Line({

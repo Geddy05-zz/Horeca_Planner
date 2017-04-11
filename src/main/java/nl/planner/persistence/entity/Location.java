@@ -5,6 +5,9 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Parent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Location class stores locations data.
  */
@@ -19,6 +22,8 @@ public class Location {
     private String name;
     private String address;
     private String city;
+    private String openingHours;
+    private List<Key<Employee>> employees;
 
     private Location() {}
 
@@ -29,6 +34,7 @@ public class Location {
         this.name = name;
         this.address = address;
         this.city = city;
+        this.employees = new ArrayList<>();
     }
 
     public Long getId() {
@@ -39,7 +45,19 @@ public class Location {
     }
 
     public String getName() {
-
         return name;
     }
+
+    public String getOpeningHours() {
+        return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
+    }
+
+    public void addEmployee(Key<Employee> employee) {
+        this.employees.add(employee);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Key;
+import nl.planner.boot.Bootstrap;
 import nl.planner.boot.WeatherRequest;
 import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.Doa.PersonDOA;
@@ -14,10 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import java.util.*;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.cache.Cache;
+import javax.cache.CacheFactory;
+import javax.cache.CacheManager;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -112,7 +114,16 @@ public class HomeController {
         if (! person.getActivated()){
             return "redirect:/logout";
         }
-        List<String[]> forecastMap = LocationController.doTES();
+
+        List<String[]> forecastMap;
+        if(Bootstrap.cache.containsKey(LocationDOA.listOfLocations(user).get(0).getId())){
+            logger.info("get from cache");
+            forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user).get(0).getId());
+        }else {
+            forecastMap = LocationController.doTES();
+            logger.info("Not in cache");
+            Bootstrap.cache.put(LocationDOA.listOfLocations(user).get(0).getId(),forecastMap);
+        }
 
         ofy().save().entity(person).now();
 
@@ -125,5 +136,28 @@ public class HomeController {
         model.addAttribute("forecast",forecastMap);
 
         return "dashboard";
+    }
+
+    @RequestMapping(value = "/getEmployeeDemand/{date}", method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model){
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        List<String[]> forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user).get(0).getId());
+        String sales = "";
+        for(String[] strl : forecastMap){
+            if(strl[0].equals(date)){
+                sales = strl[2];
+            }
+        }
+        logger.info(sales);
+        int salesRounded = Math.round(Float.parseFloat(sales));
+        int waiters = Math.round(salesRounded / 700);
+        int barkeepers = Math.round(salesRounded / 800);
+        int kitchen = Math.round(salesRounded / 750);
+        return "{\"sales\": "+ sales+"," +
+                "\"waiters\": "+waiters+" ," +
+                "\"barkeepers\":  "+barkeepers+", " +
+                "\"kitchen\": "+kitchen+"}";
     }
 }
