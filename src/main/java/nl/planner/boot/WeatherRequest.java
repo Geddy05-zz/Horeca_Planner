@@ -74,8 +74,8 @@ public class WeatherRequest {
             JSONObject today = daily.getJSONObject(i);
             weatherForecast.add( new Weather(
                     today.getString("summary"),
-                    (((today.getDouble("temperatureMin") - 32) * 5) / 9),
-                    (((today.getDouble("temperatureMax") - 32) * 5) / 9),
+                    (((today.getDouble("temperatureMin") - 32) * 5) / 9), // store temp in celsius
+                    (((today.getDouble("temperatureMax") - 32) * 5) / 9), // store temp in celsius
                     today.getDouble("precipIntensity"),
                     today.getDouble("precipProbability"),
                     today.getDouble("windSpeed"),

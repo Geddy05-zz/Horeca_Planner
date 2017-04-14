@@ -20,6 +20,7 @@
 
     <bean id="locationDOA" class="nl.planner.persistence.Doa.LocationDOA" autowire="byName"/>
     <bean id="personDOA" class="nl.planner.persistence.Doa.PersonDOA" autowire="byName"/>
+    <bean id="employeeDOA" class="nl.planner.persistence.Doa.EmployeeDOA" autowire="byName"/>
     <mvc:resources mapping = "/pages/**" location = "/WEB-INF" />
     <mvc:annotation-driven/>
 

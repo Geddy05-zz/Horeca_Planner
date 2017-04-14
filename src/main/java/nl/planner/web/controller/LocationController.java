@@ -7,7 +7,9 @@ import com.googlecode.objectify.Key;
 import com.opencsv.CSVReader;
 import nl.planner.boot.Bootstrap;
 import nl.planner.boot.SQLDatabase;
+import nl.planner.boot.SQLQueries;
 import nl.planner.machineLearning.LinearRegression;
+import nl.planner.persistence.Doa.EmployeeDOA;
 import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.Doa.PersonDOA;
 import nl.planner.persistence.entity.Person;
@@ -34,8 +36,8 @@ import java.util.logging.Logger;
 @Controller
 public class LocationController {
 
-    @Autowired
-    LocationDOA locationDOA;
+    @Autowired private LocationDOA locationDOA;
+    @Autowired private EmployeeDOA employeeDOA;
 
     private UserService userService = UserServiceFactory.getUserService();
     private static final Logger logger = Logger.getLogger(LocationController.class.getName());
@@ -84,17 +86,92 @@ public class LocationController {
         }
         logger.info(locationId);
 
-        List<String[]> forecastMap = doTES();
+        List<String[]> forecastMap = doTES(Long.parseLong(locationId));
 
         User user = userService.getCurrentUser();
         Location location = locationDOA.getLocationFromId(user,locationId);
 
+
+//        List<List<List<List<Employee>>>> planning = location.getPlanning();
         model.addAttribute("forecast",forecastMap);
         model.addAttribute("location",location);
-        return "location";
+        return "locationSettings";
     }
 
-    @RequestMapping(value="/location/{locationId}" , method = RequestMethod.POST)
+    @RequestMapping(value = "/location/addEmployee", method = RequestMethod.POST)
+    public String addEmployee(HttpServletRequest request,Model model){
+
+        String locationId = request.getParameter("locationId");
+        String name = request.getParameter("name");
+        String surname = request.getParameter("name1");
+        String dateOfBirth = request.getParameter("date");
+        String[] skillsString = request.getParameterValues("skills");
+        String[] weekdaysA = request.getParameterValues("availableWeekdays");
+        double price =  Double.parseDouble(request.getParameter("price"));
+        int contractHours = Integer.parseInt(request.getParameter("contractHours"));
+
+        logger.info("Add A Employee");
+
+        // select boxes input to skill enum.
+        Skill[] skills = new Skill[skillsString.length];
+        for(int i = 0; i < skillsString.length; i++){
+            skills[i] = Skill.valueOf(Integer.parseInt(skillsString[i]));
+        }
+
+        // cast string array to int array without use of java 8
+        int[] weekdaysAv = new int[weekdaysA.length];
+        for(int i = 0; i < weekdaysA.length; i++){
+            weekdaysAv[i] = Integer.parseInt(weekdaysA[i]);
+        }
+
+        // create the user and upload to datastore.
+        User user = userService.getCurrentUser();
+        Location location = locationDOA.getLocationFromId(user,locationId);
+        employeeDOA.createEmployee(location,name,price, skills, weekdaysAv);
+
+        model.addAttribute("location",location);
+
+        return "locationSettings";
+    }
+
+    @RequestMapping(value = "/location/deleteEmployee", method = RequestMethod.POST)
+    public String deleteEmployee(HttpServletRequest request,Model model){
+
+        User user = userService.getCurrentUser();
+        String locationId = request.getParameter("locationId");
+        String employeeId = request.getParameter("employeeId");
+
+        Location location = locationDOA.getLocationFromId(user,locationId);
+        Employee employee = location.getEmployeeById(Long.parseLong(employeeId));
+        employeeDOA.deleteEmployee(employee,location);
+
+        return "locationSettings";
+    }
+
+    //TODO: deal with correct date front-end and backend
+    @RequestMapping(value = "/location/addSales", method = RequestMethod.POST)
+    public String addSalesOfDay(HttpServletRequest request,Model model)throws Exception {
+
+        String locationId = request.getParameter("locationId");
+        String sales = request.getParameter("number");
+        String dateString = request.getParameter("date");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = formatter.parse(dateString);
+        int weekday = 0;
+        boolean holiday = true;
+        int temp = 15;
+        float rain = (float) 0.0;
+
+        storeSalesItem(date,Float.parseFloat(sales),weekday,holiday,temp,rain,locationId);
+
+        User user = userService.getCurrentUser();
+        Location location = locationDOA.getLocationFromId(user,locationId);
+
+        model.addAttribute("location",location);
+        return "locationSettings";
+    }
+
+    @RequestMapping(value="/location/uploadCSV/{locationId}" , method = RequestMethod.POST)
     public String uploadCSV(@PathVariable String locationId,HttpServletRequest request,Model model) throws IOException, ParseException {
 
         User user = userService.getCurrentUser();
@@ -111,7 +188,6 @@ public class LocationController {
                 if(!header) {
 
                     //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather
-
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     Date date = formatter.parse(l[1]);
                     float sales = Float.parseFloat(l[2]);
@@ -127,24 +203,34 @@ public class LocationController {
                 }
             }
         }
-        List<String[]> forecastMap = doTES();
-        model.addAttribute("forecast",forecastMap);
-        return "location";
+
+        Location location = locationDOA.getLocationFromId(user,locationId);
+
+        model.addAttribute("location",location);
+
+        return "locationSettings";
     }
 
+
+    /**
+     * Function store sales data in the SQL Database
+     * @param date date of the data point
+     * @param sales sales in float
+     * @param weekday weekday in numbers
+     * @param holiday boolean value if is is a holiday or not
+     * @param temp temperature the day of the data point
+     * @param rain amount of rain the at the day
+     * @param key location key for sql database
+     */
     private void storeSalesItem( Date date, float sales, int weekday,
                                  Boolean holiday, int temp, float rain, String key){
 
         String url = SQLDatabase.getUrl();
-        //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather
-
-        final String createVisitSql = "INSERT INTO "+Bootstrap.databaseName
-                +" (timestamp,sales, weekday, is_holiday,temperature,residues,location_key)"+
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather;
 
         // set right parameters to query.
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement statementCreateVisit = conn.prepareStatement(createVisitSql)) {
+             PreparedStatement statementCreateVisit = conn.prepareStatement(SQLQueries.insertSalesData)) {
             statementCreateVisit.setDouble(2,sales);
             statementCreateVisit.setDate(1,new java.sql.Date(date.getTime()));
             statementCreateVisit.setInt(3,weekday);
@@ -166,16 +252,17 @@ public class LocationController {
      *
      * @return list with predicated sales values and real sales values
      */
-    protected static List<String[]> doTES(){
+    protected static List<String[]> doTES(Long locationID){
         String url = SQLDatabase.getUrl();
-        final String getSalesDataQuery = "SELECT * From "+Bootstrap.databaseName;
 
         List<String[]> forecastMap = new ArrayList<String[]>();
         Double[] forecast = new Double[]{0.0};
 
         // Do Sql request and process the data
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement statementCreateVisit = conn.prepareStatement(getSalesDataQuery)) {
+             PreparedStatement statementCreateVisit = conn.prepareStatement(SQLQueries.getSalesDataQuery(locationID))) {
+
+            // Get results
             ResultSet results = statementCreateVisit.executeQuery();
 
             ArrayList<Double> salesNumbers = new ArrayList<Double>();
@@ -190,7 +277,7 @@ public class LocationController {
             Double[] data = salesNumbers.toArray(forecast);
 
             // Do Triple exponential smoothing
-            //TODO: develop a function that optimize the parameters for LinearRegression
+            // TODO: develop a function that optimize the parameters for LinearRegression
             forecast = LinearRegression.forecast(data, 0.1,0.6,0.3,7,30);
             forecastMap = formatForecastOutput(forecast,salesNumbers,dateList);
 
@@ -200,9 +287,19 @@ public class LocationController {
         return forecastMap;
     }
 
+    /**
+     * Function that maps date list en list of sales / forecast to a single list.
+     * @param forecast forecasting values
+     * @param salesNumbers sales data till now
+     * @param dateList all dates from historic data we used for forecasting
+     * @return a list that contains array of string with [date , sales,forecast] values
+     */
     private static List<String[]> formatForecastOutput(Double[] forecast,
                                                 ArrayList<Double> salesNumbers,
                                                 ArrayList<Date> dateList){
+        if (dateList.size() <1){
+            return new ArrayList<>();
+        }
 
         List<String[]> forecastMap = new ArrayList<>();
         Calendar c = Calendar.getInstance();

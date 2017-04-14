@@ -13,6 +13,8 @@ import nl.planner.persistence.entity.Person;
 import nl.planner.persistence.entity.Weather;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +54,7 @@ public class HomeController {
 
     @RequestMapping(value = "/getSales")
     public  @ResponseBody List<Location> getLocations() {
+
         UserService userService = UserServiceFactory.getUserService();
         return LocationDOA.listOfLocations(userService.getCurrentUser());
     }
@@ -116,12 +119,18 @@ public class HomeController {
         }
 
         List<String[]> forecastMap;
+
+        // TODO: create a function for this
         if(Bootstrap.cache.containsKey(LocationDOA.listOfLocations(user).get(0).getId())){
             logger.info("get from cache");
             forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user).get(0).getId());
+            if(forecastMap.size() < 1){
+                forecastMap = LocationController.doTES(LocationDOA.listOfLocations(user).get(0).getId());
+                Bootstrap.cache.put(LocationDOA.listOfLocations(user).get(0).getId(),forecastMap);
+            }
         }else {
-            forecastMap = LocationController.doTES();
             logger.info("Not in cache");
+            forecastMap = LocationController.doTES(LocationDOA.listOfLocations(user).get(0).getId());
             Bootstrap.cache.put(LocationDOA.listOfLocations(user).get(0).getId(),forecastMap);
         }
 
@@ -129,11 +138,34 @@ public class HomeController {
 
         List< Weather>  weather = new WeatherRequest().getWeather(52.092876,5.104480);
 
+        Date date = new Date();
+        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        List<String[]> weekOverview = new ArrayList<>();
+        int nextDays =-1;
+        for(String[] strl : forecastMap){
+            if (strl[0].equals(modifiedDate) || nextDays > 0 ){
+                if (strl[0].equals(modifiedDate)){
+                    nextDays = 7;
+                }
+                int salesRounded = Math.round(Float.parseFloat(strl[2]));
+                int waiters = Math.round(salesRounded / 700);
+                int barkeepers = Math.round(salesRounded / 850);
+                int kitchen = Math.round(salesRounded / 1000);
+                logger.info(strl[0]);
+                String[] value = new String[]{strl[0],String.valueOf(waiters),String.valueOf(barkeepers), String.valueOf(kitchen)};
+                weekOverview.add(value);
+                nextDays--;
+            }
+        }
+
         String message = userService.createLogoutURL("/");
         model.addAttribute("message", message);
         model.addAttribute("locations",LocationDOA.listOfLocations(user));
         model.addAttribute("weatherForecast",weather);
         model.addAttribute("forecast",forecastMap);
+        model.addAttribute("weekForecast",weekOverview);
+
 
         return "dashboard";
     }
@@ -141,20 +173,29 @@ public class HomeController {
     @RequestMapping(value = "/getEmployeeDemand/{date}", method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
     public String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model){
+
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
+
+        // Get forecast from mem cache
         List<String[]> forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user).get(0).getId());
         String sales = "";
+
+        // Get forecast for the selected day
         for(String[] strl : forecastMap){
+
             if(strl[0].equals(date)){
                 sales = strl[2];
             }
+
         }
-        logger.info(sales);
+
+        // Round values to integers
         int salesRounded = Math.round(Float.parseFloat(sales));
         int waiters = Math.round(salesRounded / 700);
-        int barkeepers = Math.round(salesRounded / 800);
-        int kitchen = Math.round(salesRounded / 750);
+        int barkeepers = Math.round(salesRounded / 850);
+        int kitchen = Math.round(salesRounded / 1000);
+
         return "{\"sales\": "+ sales+"," +
                 "\"waiters\": "+waiters+" ," +
                 "\"barkeepers\":  "+barkeepers+", " +

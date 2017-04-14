@@ -12,9 +12,6 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
-/**
- * Created by Geddy on 24-3-2017.
- */
 public class LocationDOA {
 
     public void createLocation(User user, String name, String adress ,String city){
@@ -40,6 +37,15 @@ public class LocationDOA {
     public Location getLocationFromId(User user,String locationId){
 
         Person person = PersonDOA.getPersonFromUser(user);
+
+        return ofy().load().type(Location.class)
+                .parent(person)
+                .id(Long.parseLong(locationId))
+                .now();
+    }
+    public Location getLocationFromId(String user,String locationId){
+
+        Person person = PersonDOA.getPersonFromUserID(user);
 
         return ofy().load().type(Location.class)
                 .parent(person)

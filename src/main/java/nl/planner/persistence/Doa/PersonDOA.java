@@ -26,4 +26,15 @@ public class PersonDOA {
         }
         return profile;
     }
+    public static Person getPersonFromUserID(String userID) {
+        // First fetch it from the datastore.
+        Person profile = ofy().load().key(
+                Key.create(Person.class, userID)).now();
+//        if (profile == null) {
+//            // Create a new Profile if not exist.
+//            String email = user.getEmail();
+//            profile = new Person(user.getUserId(), email,email);
+//        }
+        return profile;
+    }
 }

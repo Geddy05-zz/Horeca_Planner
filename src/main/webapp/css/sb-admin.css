@@ -205,7 +205,25 @@ ul.alert-dropdown {
 }
 
 .panel-red > a:hover {
-    color: #b52b27;
+    color: #d9534f;
+}
+
+.panel-blue {
+    border-color: #5bc0de;
+}
+
+.panel-blue > .panel-heading {
+    border-color: #5bc0de;
+    color: #fff;
+    background-color: #5bc0de;
+}
+
+.panel-blue > a {
+    color: #5bc0de;
+}
+
+.panel-blue > a:hover {
+    color: #428BCA;
 }
 
 .panel-yellow {
@@ -224,4 +242,20 @@ ul.alert-dropdown {
 
 .panel-yellow > a:hover {
     color: #df8a13;
+}
+
+th, td {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
 }

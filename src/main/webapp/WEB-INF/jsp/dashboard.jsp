@@ -9,8 +9,8 @@
     Location location = null;
     if(request.getAttribute("locations") != null) {
         locations = (List<Location>) request.getAttribute("locations");
-        if(location != null) {
-            location = (locations.size() >= 1) ? locations.get(1) : null;
+        if(locations != null) {
+//            location = (locations.size() >= 1) ? locations.get(0) : null;
         }
     }
 
@@ -113,7 +113,7 @@
                     <h3> week overview employees needed:</h3>
                     <div id="morris-sales-chart"></div>
                     <div class="text-right">
-                        <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="/location/1/createSchedule"> Create Schedule for this week <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -303,41 +303,19 @@
                                 <td style="text-align: center"><%= weather.get(6).getSummary()%></td>
                             </tr>
                         </table>
-
-                        <%--<a href="#" class="list-group-item">--%>
-                            <%--<span class="badge">celcius</span>--%>
-                            <%--<i class="fa fa-fw fa-sun-o"></i> Max Temp : <%= (int) weather.getMaxTemp()  %>--%>
-                        <%--</a>--%>
-                        <%--<a href="#" class="list-group-item">--%>
-                            <%--<span class="badge">celcius</span>--%>
-                            <%--<i class="fa fa-fw fa-moon-o"></i> Min Temp : <%= (int) weather.getMinTemp() %>--%>
-                        <%--</a>--%>
-                        <%--<a href="#" class="list-group-item">--%>
-                            <%--<span class="badge">%</span>--%>
-                            <%--<i class="fa fa-fw fa-tint"></i> rain Probability : <%= weather.getRainProbability() %>--%>
-                        <%--</a>--%>
-                        <%--<% if (weather.getRain() > 0.01 ){ %>--%>
-                            <%--<a href="#" class="list-group-item">--%>
-                                <%--<span class="badge">mm</span>--%>
-                                <%--<i class="fa fa-fw fa-tint"></i> rainfall : <%= weather.getRain() %>--%>
-                            <%--</a>--%>
-                        <%--<% }%>--%>
-                        <%--<a href="#" class="list-group-item">--%>
-                            <%--<span class="badge">km/u</span>--%>
-                            <%--<i class="fa fa-fw fa-cloud"></i> Wind speed : <%= (int) weather.getWindSpeed() %>--%>
-                        <%--</a>--%>
-                    <%--</div>--%>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script src="/js/dashboard.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 <script>
     <%
     List<String[]>  forecast = (List<String[]> ) request.getAttribute("forecast");
+    List<String[]>  weekForecast = (List<String[]> ) request.getAttribute("weekForecast");
     %>
 
     new Morris.Line({
@@ -348,6 +326,7 @@
         data: [
             <%
             int i = 0;
+            if(forecast.size() > 60){
             for(String[] map: forecast.subList(forecast.size()-60,forecast.size())){
 
                 if(map[1].equals("-")){
@@ -359,7 +338,7 @@
             { year:  "<%= map[0] %>" , value:  <%= map[1] %>, forecast: <%= map[2]%>},
 
             <%  }
-            }; %>
+            }; }%>
         ],
         // The name of the data record attribute that contains x-values.
         xkey: 'year',
@@ -379,11 +358,16 @@
         element: 'morris-sales-chart',
         // Chart data records -- each entry in this array corresponds to a point on
         // the chart.
-        data:[ { date:  "2017-3-29" , waiters:  5, barkeepers: 2, kitchen: 3},
-            { date:  "2017-3-30" , waiters:  6, barkeepers: 4, kitchen: 4},
-            { date:  "2017-3-31" , waiters:  8, barkeepers: 5, kitchen: 6},
-            { date:  "2017-4-1" , waiters:  8, barkeepers: 5, kitchen: 6},
-            { date:  "2017-4-2" , waiters:  7, barkeepers: 4, kitchen: 5}
+        data:[
+            <%
+            if(weekForecast.size() > 0){
+             for(String[] map: weekForecast){
+                 %>
+            { date:  "<%=map[0]%>" , waiters:  <%=map[1]%>, barkeepers: <%=map[2]%>, kitchen: <%=map[3]%>},
+
+            <%
+             }}
+            %>
         ],
         // The name of the data record attribute that contains x-values.
         xkey: 'date',
