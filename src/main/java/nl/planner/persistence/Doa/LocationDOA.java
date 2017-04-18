@@ -3,12 +3,9 @@ package nl.planner.persistence.Doa;
 import com.googlecode.objectify.Key;
 import nl.planner.persistence.entity.Location;
 import nl.planner.persistence.entity.Person;
-import nl.planner.web.controller.HomeController;
-
 import static com.googlecode.objectify.ObjectifyService.factory;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import com.google.appengine.api.users.User;
-import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
@@ -27,6 +24,11 @@ public class LocationDOA {
         ofy().save().entities(person,location).now();
     }
 
+    /**
+     * get all the location from a given user
+     * @param user the user
+     * @return all the users locations
+     */
     public static List<Location> listOfLocations(User user){
 
         return ofy().load().type(Location.class)
@@ -34,6 +36,12 @@ public class LocationDOA {
                 .list();
     }
 
+    /**
+     * Get the correct location corresponding with the locationId
+     * @param user the user for getting the correct organisation
+     * @param locationId location id
+     * @return returns the location corresponding with the location id.
+     */
     public Location getLocationFromId(User user,String locationId){
 
         Person person = PersonDOA.getPersonFromUser(user);
@@ -43,9 +51,16 @@ public class LocationDOA {
                 .id(Long.parseLong(locationId))
                 .now();
     }
-    public Location getLocationFromId(String user,String locationId){
 
-        Person person = PersonDOA.getPersonFromUserID(user);
+    /**
+     * Get the correct location corresponding with the locationId
+     * @param userId the userId for getting the correct organisation
+     * @param locationId location id
+     * @return returns the location corresponding with the location id.
+     */
+    public Location getLocationFromId(String userId,String locationId){
+
+        Person person = PersonDOA.getPersonFromUserID(userId);
 
         return ofy().load().type(Location.class)
                 .parent(person)

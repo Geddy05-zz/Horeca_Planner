@@ -21,6 +21,7 @@ public class EmployeePool {
     private List<Employee> employeeList = new ArrayList<>();
 
     public EmployeePool(String locationID,String userID){
+
         LocationDOA locationDOA = new LocationDOA();
         Location location =locationDOA.getLocationFromId(userID,locationID);
 
@@ -29,17 +30,26 @@ public class EmployeePool {
         }
     }
 
+    /**
+     * A function the selected a random employee from the poll
+     * depending on the needed skills.
+     * @param skillNR the required skill
+     * @return the selected employee
+     */
     public Employee getRandomEmployee(int skillNR){
+
         Random r = new Random();
         int rNumber = r.nextInt(employeeList.size());
         Employee e = employeeList.get(rNumber);
+
         for (Skill skill : e.getSkills()){
+
             if(skill.getValue() == skillNR){
                 employeeList.remove(e);
                 return e;
             }
-        }
 
+        }
         return getRandomEmployee(skillNR);
     }
 }

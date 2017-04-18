@@ -68,6 +68,7 @@ public class WeatherRequest {
         // Get array of daily weather forecast.
         JSONArray daily = json.getJSONObject("daily").getJSONArray("data");
         List<Weather> weatherForecast = new ArrayList<Weather>();
+
         for(int i = 0 ; i < daily.length() -1 ; i++) {
 
             // Create weather forecast object

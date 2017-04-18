@@ -23,7 +23,10 @@ public class FitnessCalculator {
         return fitness;
     }
 
-    // Get optimum fitness
+    /** Get optimum fitness
+     *
+     * @return maximal accepted fitness value
+     */
     public static double getMaxFitness() {
         return 650.0;
 //        return maxFitness;

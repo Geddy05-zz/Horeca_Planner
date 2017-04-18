@@ -4,12 +4,16 @@ package nl.planner.machineLearning.roostering;
  * Created by Geddy on 13-4-2017.
  */
 public class Population {
-    RosterIndividual[] individuals;
-    int shift = 3;
-    /*
- * Constructors
- */
-    // Create a population
+    private RosterIndividual[] individuals;
+    private int shift = 3;
+
+    /**
+     * initialisation function that creates a population.
+     * @param populationSize the size of the population
+     * @param initialise a boolean if the function have to create new individuals
+     * @param locationID the id of the location.
+     * @param userID the id of the user.
+     */
     public Population(int populationSize, boolean initialise,String locationID, String userID) {
         individuals = new RosterIndividual[populationSize];
         // Initialise population
@@ -64,12 +68,20 @@ public class Population {
     }
 
     /* Public methods */
-    // Get population size
+
+    /**
+     * Get population size
+     * @return size of the individuals.
+     */
     public int size() {
         return individuals.length;
     }
 
-    // Save individual
+    /**
+     * add individual at a given index.
+     * @param index the index where the individual belongs.
+     * @param indiv the new individual.
+     */
     public void saveIndividual(int index, RosterIndividual indiv) {
         individuals[index] = new RosterIndividual(indiv.getWeek());
     }

@@ -91,6 +91,9 @@ public class Location {
         return employee;
     }
 
+    /**
+     * This function is only used for testing. It creates a new employeeList
+     */
     public void renewEmployeesList(){
         employees = new ArrayList<>();
     }
@@ -102,12 +105,23 @@ public class Location {
         return new ArrayList<>();
     }
 
+    /**
+     * A function that formats the planning to a string so the program
+     * can store the data.
+     * @param planning
+     */
     public void setPlanning(List<List<List<Employee[]>>> planning) {
+
         Gson gson = new Gson();
         String json = gson.toJson(planning);
         this.planning = json;
     }
 
+    /**
+     * A function that get the data structure we need for computation.
+     * data is stored as a string.
+     * @return returns the weekplanning by day by shift.
+     */
     public List<List<List<List<Employee>>>> getPlanning() {
         if(planning == null){
             return new ArrayList<>();
