@@ -21,11 +21,13 @@ public class Algorithm {
     public static String userID;
 
     private EmployeePool pool;
+    private  List<List<int[]>> planningFrame;
 
-    public Algorithm(String locationID,String userID){
+    public Algorithm(String locationID,String userID, List<List<int[]>> planningFrame){
         this.locationID = locationID;
         this.userID = userID;
-        pool = new EmployeePool(locationID,userID);
+//        pool = new EmployeePool(locationID,userID);
+        this.planningFrame = planningFrame;
     }
 
     /**
@@ -38,7 +40,7 @@ public class Algorithm {
      */
     public Population evolvePopulation(Population population,String locationID) {
         Population newPopulation = population;
-        pool = new EmployeePool(locationID,userID);
+//        pool = new EmployeePool(locationID,userID);
 
         // Keep our best individual
         if (elitism) {
@@ -57,8 +59,8 @@ public class Algorithm {
         for (int i = elitismOffset; i < population.size(); i++) {
 
             if (Math.random() <= crossoverRate) {
-                RosterIndividual indiv1 = tournamentSelection(population, null);
-                RosterIndividual indiv2 = tournamentSelection(population, indiv1);
+                RosterIndividual indiv1 = tournamentSelection(population, null,planningFrame);
+                RosterIndividual indiv2 = tournamentSelection(population, indiv1,planningFrame);
 
                 RosterIndividual newIndiv = crossover(indiv1, indiv2);
                 newPopulation.saveIndividual(population.getWeakkestindex(), newIndiv);
@@ -129,10 +131,10 @@ public class Algorithm {
     public static boolean isValidePlanning(List<List<List<Employee[]>>> planning){
 
         for(List<List<Employee[]>> day : planning) {
-            ArrayList<Long> employees = new ArrayList<>();
 
             for (List<Employee[]> shift : day) {
                 int shiftCount = 0;
+                ArrayList<Float> employees = new ArrayList<>();
 
                 for (Employee[] cat : shift) {
                     shiftCount++;
@@ -142,13 +144,12 @@ public class Algorithm {
                         if (listContainsValue(employees,e.getId())) {
                             return false;
                         }
-
                         else {
 
                             if(!hasGoodSkills(shiftCount,e)){
                                 return false;
                             }
-                            employees.add(e.getId());
+                            employees.add(e.getId().floatValue());
                         }
                     }
                 }
@@ -166,9 +167,9 @@ public class Algorithm {
         return false;
     }
 
-    private static boolean listContainsValue(List<Long> list , float value){
-        for(Long i: list){
-            if (i == value){
+    private static boolean listContainsValue(List<Float> list , float value){
+        for(Float i: list){
+            if ( i == value){
                 return true;
             }
         }
@@ -198,7 +199,7 @@ public class Algorithm {
 
                         // decides which genes have to change.
                         if(Math.random() <= 0.1) {
-                            pool = new EmployeePool(locationID,userID);
+                            pool = new EmployeePool(locationID,userID,dayn);
                             newSol.setGene(dayOfweek, dayn, shiftn, i,
                                     pool.getRandomEmployee(shiftn + 1));
                         }
@@ -223,9 +224,9 @@ public class Algorithm {
      * @param indiv1 a selected individual from the previous tournament.
      * @return the winner from the tournament.
      */
-    private RosterIndividual tournamentSelection(Population pop, RosterIndividual indiv1) {
+    private RosterIndividual tournamentSelection(Population pop, RosterIndividual indiv1, List<List<int[]>> planningFrame) {
         // Create a tournament population
-        Population tournament = new Population(tournamentSize, false,locationID,userID);
+        Population tournament = new Population(tournamentSize, false,locationID,userID,planningFrame);
 
         // For each place in the tournament get a random individual
         for (int i = 0; i < tournamentSize; i++) {

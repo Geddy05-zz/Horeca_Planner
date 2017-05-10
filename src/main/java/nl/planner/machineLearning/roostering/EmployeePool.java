@@ -20,13 +20,16 @@ public class EmployeePool {
 
     private List<Employee> employeeList = new ArrayList<>();
 
-    public EmployeePool(String locationID,String userID){
+    public EmployeePool(String locationID,String userID, int dayNumber){
 
         LocationDOA locationDOA = new LocationDOA();
         Location location =locationDOA.getLocationFromId(userID,locationID);
 
         for(Employee e : location.getEmployees()){
-            employeeList.add(new Employee(e.getId(),e.getName(),e.getPrice(),e.getSkills(),e.getAvailableWeekdays()));
+            if (e.isAvailableOnDay(dayNumber)) {
+                employeeList.add(new Employee(e.getId(), e.getName(), e.getPrice(), e.getSkills(),
+                        e.getAvailableWeekdays(), e.getExperience(),e.getHoursInContract()));
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import nl.planner.persistence.Doa.PersonDOA;
 import nl.planner.persistence.entity.Person;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -36,6 +37,7 @@ public class ProfileController {
     @RequestMapping(value = "/profile", method = RequestMethod.POST)
     public String saveProfile(HttpServletRequest request, Model model){
         User user = userService.getCurrentUser();
+
         if (!userService.isUserLoggedIn()){
             return "redirect:/";
         }
@@ -60,11 +62,9 @@ public class ProfileController {
 
     @RequestMapping(value = "/createProfile", method = RequestMethod.GET)
     public String createProfilePage(Model model) {
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
-        String userId = user.getUserId();
-        String email = user.getEmail();
-        Person person = new Person(userId, email,email);
+
+        String mail = "fasdf";
+        Person person = new Person(mail, mail,mail);
 
         model.addAttribute("person",person);
         return "createProfile";
@@ -74,8 +74,8 @@ public class ProfileController {
     public String createProfile(HttpServletRequest request) {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
-        String userId = user.getUserId();
-        String email = user.getEmail();
+        String userId = request.getParameter("Name (Full name)");
+        String email = request.getParameter("Name (Full name)");
         Person person = new Person(userId, email,email);
 
         String name = request.getParameter("Name (Full name)");

@@ -23,17 +23,17 @@
         <div class="page-header">
         <h1 >
             Dashboard <small>for location:
-                <select name="locations" id="locations" value="1">
-                    <%
-                        if(locations != null){
-                            for(Location loc: locations){
-                    %>
-                    <option value=<%= loc.getId()%>><%= loc.getName()%></option>
-                    <%
-                            };
-                        }
-                    %>
-                </select>
+                <%--<select name="locations" id="locations" value="1">--%>
+                    <%--<%--%>
+                        <%--if(locations != null){--%>
+                            <%--for(Location loc: locations){--%>
+                    <%--%>--%>
+                    <%--<option value=<%= loc.getId()%>><%= loc.getName()%></option>--%>
+                    <%--<%--%>
+                            <%--};--%>
+                        <%--}--%>
+                    <%--%>--%>
+                <%--</select>--%>
         </small>
         </h1>
         </div>
@@ -113,7 +113,11 @@
                     <h3> week overview employees needed:</h3>
                     <div id="morris-sales-chart"></div>
                     <div class="text-right">
-                        <a href="/location/1/createSchedule"> Create Schedule for this week <i class="fa fa-arrow-circle-right"></i></a>
+                        <%--<a href=" <%= "/location/" + locations.get(0).getId() + "/createSchedule" %> ">--%>
+                            <a href=" <%= "/locations" %> ">
+                            Create Schedule for this week
+                            <i class="fa fa-arrow-circle-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -313,74 +317,75 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 <script>
-    <%
-    List<String[]>  forecast = (List<String[]> ) request.getAttribute("forecast");
-    List<String[]>  weekForecast = (List<String[]> ) request.getAttribute("weekForecast");
-    %>
+    <%--<%--%>
+    <%--List<String[]>  forecast = (List<String[]> ) request.getAttribute("forecast");--%>
+    <%--List<String[]>  weekForecast = (List<String[]> ) request.getAttribute("weekForecast");--%>
+    <%--%>--%>
 
-    new Morris.Line({
-        // ID of the element in which to draw the chart.
-        element: 'salesChart',
-        // Chart data records -- each entry in this array corresponds to a point on
-        // the chart.
-        data: [
-            <%
-            int i = 0;
-            if(forecast.size() > 60){
-            for(String[] map: forecast.subList(forecast.size()-60,forecast.size())){
+    <%--new Morris.Line({--%>
+        <%--// ID of the element in which to draw the chart.--%>
+        <%--element: 'salesChart',--%>
+        <%--// Chart data records -- each entry in this array corresponds to a point on--%>
+        <%--// the chart.--%>
+        <%--data: [--%>
+            <%--<%--%>
+            <%--int i = 0;--%>
+            <%--if(forecast.size() > 60){--%>
+            <%--for(String[] map: forecast.subList(forecast.size()-60,forecast.size())){--%>
 
-                if(map[1].equals("-")){
-            %>
-            { year:  "<%= map[0] %>" ,  forecast: <%= map[2]%>},
-            <%
-                }else{
-            %>
-            { year:  "<%= map[0] %>" , value:  <%= map[1] %>, forecast: <%= map[2]%>},
+                <%--if(map[1].equals("-")){--%>
+            <%--%>--%>
+            <%--{ year:  "<%= map[0] %>" ,  forecast: <%= map[2]%>},--%>
+            <%--<%--%>
+                <%--}else{--%>
+            <%--%>--%>
+            <%--{ year:  "<%= map[0] %>" , value:  <%= map[1] %>, forecast: <%= map[2]%>},--%>
 
-            <%  }
-            }; }%>
-        ],
-        // The name of the data record attribute that contains x-values.
-        xkey: 'year',
-        xLabels:"day",
+            <%--<%  }--%>
+            <%--}; }%>--%>
+        <%--],--%>
+        <%--// The name of the data record attribute that contains x-values.--%>
+        <%--xkey: 'year',--%>
+        <%--xLabels:"day",--%>
 
-        pointSize:0,
-        // A list of names of data record attributes that contain y-values.
-        ykeys: ['value','forecast'],
-        // Labels for the ykeys -- will be displayed when you hover over the
-        // chart.
-        resize: true,
-        labels: ['Sales','Forecast']
-    });
+        <%--pointSize:0,--%>
+        <%--// A list of names of data record attributes that contain y-values.--%>
+        <%--ykeys: ['value','forecast'],--%>
+        <%--// Labels for the ykeys -- will be displayed when you hover over the--%>
+        <%--// chart.--%>
+        <%--resize: true,--%>
+        <%--labels: ['Sales','Forecast']--%>
+    <%--});--%>
 
-    new Morris.Line({
-        // ID of the element in which to draw the chart.
-        element: 'morris-sales-chart',
-        // Chart data records -- each entry in this array corresponds to a point on
-        // the chart.
-        data:[
-            <%
-            if(weekForecast.size() > 0){
-             for(String[] map: weekForecast){
-                 %>
-            { date:  "<%=map[0]%>" , waiters:  <%=map[1]%>, barkeepers: <%=map[2]%>, kitchen: <%=map[3]%>},
+    <%--new Morris.Line({--%>
+        <%--// ID of the element in which to draw the chart.--%>
+        <%--element: 'morris-sales-chart',--%>
+        <%--// Chart data records -- each entry in this array corresponds to a point on--%>
+        <%--// the chart.--%>
+        <%--data:[--%>
+            <%--<%--%>
+            <%--if(weekForecast.size() > 0){--%>
+             <%--for(String[] map: weekForecast){--%>
+                 <%--%>--%>
+            <%--{ date:  "<%=map[0]%>" , waiters:  <%=map[1]%>, barkeepers: <%=map[2]%>, kitchen: <%=map[3]%>},--%>
 
-            <%
-             }}
-            %>
-        ],
-        // The name of the data record attribute that contains x-values.
-        xkey: 'date',
-        xLabels:"day",
+            <%--<%--%>
+             <%--}}--%>
+            <%--%>--%>
+        <%--],--%>
+        <%--// The name of the data record attribute that contains x-values.--%>
+        <%--xkey: 'date',--%>
+        <%--xLabels:"day",--%>
 
-        pointSize:0,
-        // A list of names of data record attributes that contain y-values.
-        ykeys: ['waiters','barkeepers','kitchen'],
-        // Labels for the ykeys -- will be displayed when you hover over the
-        // chart.
-        resize: true,
-        labels: ['waiters','barkeepers','kitchen']
-    });
+        <%--pointSize:0,--%>
+        <%--// A list of names of data record attributes that contain y-values.--%>
+        <%--ykeys: ['waiters','barkeepers','kitchen'],--%>
+        <%--// Labels for the ykeys -- will be displayed when you hover over the--%>
+        <%--// chart.--%>
+        <%--resize: true,--%>
+        <%--labels: ['waiters','barkeepers','kitchen']--%>
+    <%--});--%>
+
 </script>
 <!-- /.row -->
 

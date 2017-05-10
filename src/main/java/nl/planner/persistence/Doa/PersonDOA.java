@@ -33,7 +33,7 @@ public class PersonDOA {
      * @param userID user id
      * @return the person with the given user id.
      */
-    static Person getPersonFromUserID(String userID) {
+    public static Person getPersonFromUserID(String userID) {
         // First fetch it from the datastore.
         Person profile = ofy().load().key(
                 Key.create(Person.class, userID)).now();

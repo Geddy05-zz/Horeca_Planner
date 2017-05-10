@@ -1,5 +1,7 @@
 package nl.planner.machineLearning.roostering;
 
+import java.util.List;
+
 /**
  * Created by Geddy on 13-4-2017.
  */
@@ -14,14 +16,14 @@ public class Population {
      * @param locationID the id of the location.
      * @param userID the id of the user.
      */
-    public Population(int populationSize, boolean initialise,String locationID, String userID) {
+    public Population(int populationSize, boolean initialise, String locationID, String userID, List<List<int[]>> planningFrame) {
         individuals = new RosterIndividual[populationSize];
         // Initialise population
         if (initialise) {
             // Loop and create individuals
             for (int i = 0; i < size(); i++) {
                 RosterIndividual newIndividual = new RosterIndividual();
-                newIndividual.generateIndividual(shift,locationID,userID);
+                newIndividual.generateIndividual(planningFrame,locationID,userID);
                 saveIndividual(i, newIndividual);
             }
         }

@@ -15,13 +15,20 @@
 <!-- Morris Charts CSS -->
 <link href="/css/plugins/morris.css" rel="stylesheet">
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 <!-- Custom Fonts -->
 <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-<div id="page-wrapper">
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
 
+<div id="page-wrapper">
     <div class="container-fluid">
-<div class="row">
+        <div id= "newProfile" class="row">
     <div class="col-md-12 ">
         <form class="form-horizontal" method="POST">
             <fieldset>
@@ -149,5 +156,19 @@
         </form>
     </div>
 </div>
+        <div id="loading" class="row" style="height: 100%">
+            <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw" style="position: absolute; top: 50%;left: 50%;"></i>
+            <span class="sr-only">Loading....</span>
+            <h4 style="position: absolute; top: 60%;left: 51%;">Loading</h4>
+        </div>
+    </div>
 </div>
-</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css">
+
+<script src="/js/createProfile.js"></script>

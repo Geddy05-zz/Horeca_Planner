@@ -27,17 +27,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <%
-                            List<Location> locations=(List<Location>) request.getAttribute("locations");
-                            for(Location location: locations){
-                                %>
-                                 <tr>
-                                     <td><a href = <%=  "/location/"+location.getId() %> ><%= location.getName()%></a></td>
-                                    <td><%= location.getAddress() %></td>
-                                 </tr>
-                           <%
-                            }
-                        %>
+                        <%--<%--%>
+                            <%--List<Location> locations=(List<Location>) request.getAttribute("locations");--%>
+                            <%--for(Location location: locations){--%>
+                                <%--%>--%>
+                                 <%--<tr>--%>
+                                     <%--<td><a href = <%=  "/location/"+location.getId() %> ><%= location.getName()%></a></td>--%>
+                                    <%--<td><%= location.getAddress() %></td>--%>
+                                 <%--</tr>--%>
+                           <%--<%--%>
+                            <%--}--%>
+                        <%--%>--%>
                         </tbody>
                     </table>
                 </div>
@@ -103,5 +103,8 @@
         </div>
     </div>
 </div>
+
+<script src="/js/locations.js"></script>
+
 
 <jsp:include page="/layout/footer.jsp"/>

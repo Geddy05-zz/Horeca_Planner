@@ -4,19 +4,21 @@ import com.googlecode.objectify.Key;
 import nl.planner.persistence.entity.Employee;
 import nl.planner.persistence.entity.Location;
 import nl.planner.persistence.entity.Skill;
+import nl.planner.persistence.enums.Experience;
 
 import static com.googlecode.objectify.ObjectifyService.factory;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class EmployeeDOA {
 
-    public Employee createEmployee(Location location, String name,double priceHour, Skill[] skills,int[] availableWeekdays){
+    public Employee createEmployee(Location location, String name,double priceHour, Skill[] skills,
+                                   int[] availableWeekdays, Experience ex,int hoursInContract){
 
         Key<Location> locationKey = Key.create(Location.class,location.getId());
         final Key<Employee> EmployeeKey = factory().allocateId(locationKey,Employee.class);
         final long employeeId = EmployeeKey.getId();
 
-        Employee employee = new Employee(employeeId,name,priceHour,skills,availableWeekdays);
+        Employee employee = new Employee(employeeId,name,priceHour,skills,availableWeekdays,ex,hoursInContract);
 
         location.addEmployee(employee);
         ofy().save().entities(employee,location).now();
@@ -26,6 +28,8 @@ public class EmployeeDOA {
 
     public void deleteEmployee(Employee employee,Location location){
         location.removeEmployee(employee);
-        ofy().delete().entities(employee);
+
+        ofy().delete().entities(employee).now();
+        ofy().save().entity(location).now();
     }
 }

@@ -19,41 +19,46 @@ public class RosterIndividual {
         this.week =week;
     }
 
-
     /**
      * This function creates the first individuals for the generic algorithm.
-     * @param shifts The number of shifts
+     * @param planningFrame The number of shifts
      * @param locationID the id of the location (needed for getting the correct employees)
      * @param userID the id of the user (needed for getting the correct employees)
      */
-    public void generateIndividual(int shifts,String locationID,String userID){
+    public void generateIndividual(List<List<int[]>> planningFrame, String locationID,String userID){
         this.shifts = shifts;
         week = new ArrayList<>();
 
-        for(int i = 0; i< 7; i++){
+        int dayNumber = 0;
+        for(List<int[]> days : planningFrame){
 
             List<List<Employee[]>> day = new ArrayList<>();
-            EmployeePool pool = new EmployeePool(locationID,userID);
 
-            for(int shift =1 ; shift < shifts; shift++) {
+            for(int[] shift: days) {
+                EmployeePool pool = new EmployeePool(locationID,userID,dayNumber);
 
                 List<Employee[]> shiftList = new ArrayList<>();
-                Employee[] waiters = new Employee[]{pool.getRandomEmployee(1), pool.getRandomEmployee(1)};
-                Employee[] bartenders = new Employee[]{pool.getRandomEmployee(2), pool.getRandomEmployee(2)};
-                Employee[] kitchen = new Employee[]{pool.getRandomEmployee(3), pool.getRandomEmployee(3)};
+                int count = 0;
 
-                shiftList.add(waiters);
-                shiftList.add(bartenders);
-                shiftList.add(kitchen);
+                for(int nr : shift){
+                    count++;
+                    Employee[] waiters = new Employee[nr];
+
+                    for(int i=0; i< nr; i++){
+                        waiters[i] = pool.getRandomEmployee(count);
+                    }
+                    shiftList.add(waiters);
+                }
 
                 day.add(shiftList);
             }
 
             week.add(day);
+            dayNumber++;
         }
 
         if(!Algorithm.isValidePlanning(week)){
-            generateIndividual(shifts,locationID,userID);
+            generateIndividual(planningFrame,locationID,userID);
         }
     }
 
@@ -96,7 +101,8 @@ public class RosterIndividual {
                     int count = 0;
 
                     for(Employee e : cat){
-                        tcat[count] = new Employee(e.getId(),e.getName(),e.getPrice(),e.getSkills(),e.getAvailableWeekdays());
+                        tcat[count] = new Employee(e.getId(),e.getName(),e.getPrice(),e.getSkills(),
+                                e.getAvailableWeekdays(), e.getExperience(),e.getHoursInContract());
                         count++;
                     }
                     tshift.add(tcat);

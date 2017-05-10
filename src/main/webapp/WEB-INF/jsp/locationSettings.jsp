@@ -44,6 +44,7 @@
                                 </label>
                                 <input class="form-control" id="name1" name="name1" type="text"/>
                             </div>
+
                             <div class="form-group ">
                                 <label class="control-label " for="date">
                                     Date
@@ -138,6 +139,18 @@
                         </span>
                                 </label>
                                 <input class="form-control" id="price" name="price" type="text"/>
+                            </div>
+                            <div class="form-group ">
+                                <label class="control-label requiredField" for="price">
+                                    Price per hour
+                                    <span class="asteriskField">    *   </span>
+                                </label>
+                                <select name="experience">
+                                    <option value="1">New</option>
+                                    <option value="10">Junior</option>
+                                    <option value="15">Medior</option>
+                                    <option value="20">Senior</option>
+                                </select>
                             </div>
                             <div class="form-group ">
                                 <label class="control-label requiredField" for="contractHours">
@@ -445,7 +458,7 @@
     <div class="col-md-6">
         <h3> Employee list</h3>
         <div class="col-lg-12">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label>Name:</label>
             </div>
             <div class="col-md-6">
@@ -457,16 +470,30 @@
             for(Employee employee : location.getEmployees()){
         %>
              <div class="col-lg-12">
-                 <div class="col-md-6">
-                      <%= employee.getName()%>
-                 </div>
-                <div class="col-md-6">
-                    <% for(Skill skill:  employee.getSkills()){%>
-                    <%=
-                        skill.name()
-                %> &nbsp;
-                    <% }%>
-                </div>
+                 <form action="/location/deleteEmployee" id ="<%= employee.getName() %>" method="post">
+                     <div class="col-md-4">
+                          <%= employee.getName()%>
+                     </div>
+                     <div class="col-md-6">
+                         <input type="hidden" name="employeeId" value=<%=employee.getId()%>>
+                         <input type="hidden" name="locationId" value=<%=location.getId()%>>
+                        <% for(Skill skill:  employee.getSkills()){%>
+                        <%=
+                            skill.name()
+                    %> &nbsp;
+                        <% }%>
+                     </div>
+                     <div class="col-md-2">
+
+                         <a class="btn btn-danger"
+                            onclick="document.getElementById('<%= employee.getName() %>').submit()"
+                            aria-label="Delete">
+
+                             <i class="fa fa-trash-o" aria-hidden="true"></i>
+                         </a>
+                         <%--<input  class="btn btn-danger" type="submit" value="Delete" />--%>
+                     </div>
+                 </form>
             </div>
         <%
                 }

@@ -13,6 +13,7 @@ import nl.planner.persistence.Doa.EmployeeDOA;
 import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.Doa.PersonDOA;
 import nl.planner.persistence.entity.Person;
+import nl.planner.persistence.enums.Experience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import nl.planner.persistence.entity.* ;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.*;
 import java.sql.*;
@@ -46,34 +48,40 @@ public class LocationController {
     @RequestMapping(value = "/locations", method = RequestMethod.GET)
     public String location(HttpServletRequest request, Model model){
 
-        if (request.getUserPrincipal() == null){
-            return "redirect:/";
-        }
-
-        String userId = userService.getCurrentUser().getUserId();
-        List<Location> locations = ofy().load().type(Location.class).ancestor(Key.create(Person.class, userId)).list();
-
-        model.addAttribute("locations",locations);
+//        if (request.getUserPrincipal() == null){
+//            return "redirect:/";
+////        }
+//
+//        String userId = userService.getCurrentUser().getUserId();
+//        List<Location> locations = ofy().load().type(Location.class).ancestor(Key.create(Person.class, userId)).list();
+//
+//        model.addAttribute("locations",locations);
 
         return "locations";
+    }
+
+    @RequestMapping(value = "/getLocations", method = RequestMethod.GET)
+    public @ResponseBody
+    List<Location> getlocations(HttpServletRequest request, Model model){
+
+        String mail = request.getParameter("userMail");
+        List<Location> locations = ofy().load().type(Location.class).ancestor(Key.create(Person.class, mail)).list();
+
+        return locations;
     }
 
     @RequestMapping(value = "/locations", method = RequestMethod.POST)
     public String addLocation(HttpServletRequest request, Model model){
 
-        if (request.getUserPrincipal() == null){
-            return "redirect:/";
-        }
-
-        User user = userService.getCurrentUser();
-        model.addAttribute("person", PersonDOA.getPersonFromUser(user));
+        String mail = request.getParameter("userMail");
+        model.addAttribute("person", PersonDOA.getPersonFromUserID(mail));
 
         String name = request.getParameter("Name");
         String address = request.getParameter("Adress");
         String city = request.getParameter("City");
 
-        locationDOA.createLocation(user,name,address,city);
-        List<Location> locations = locationDOA.listOfLocations(user);
+        locationDOA.createLocation(mail,name,address,city);
+        List<Location> locations = locationDOA.listOfLocations(mail);
 
         model.addAttribute("locations",locations);
         return "locations";
@@ -106,6 +114,7 @@ public class LocationController {
         String surname = request.getParameter("name1");
         String dateOfBirth = request.getParameter("date");
         String[] skillsString = request.getParameterValues("skills");
+        int experienceNr = Integer.parseInt(request.getParameter("experience"));
         String[] weekdaysA = request.getParameterValues("availableWeekdays");
         double price =  Double.parseDouble(request.getParameter("price"));
         int contractHours = Integer.parseInt(request.getParameter("contractHours"));
@@ -127,7 +136,7 @@ public class LocationController {
         // create the user and upload to datastore.
         User user = userService.getCurrentUser();
         Location location = locationDOA.getLocationFromId(user,locationId);
-        employeeDOA.createEmployee(location,name,price, skills, weekdaysAv);
+        employeeDOA.createEmployee(location,name,price, skills, weekdaysAv,Experience.forValue(experienceNr),contractHours);
 
         model.addAttribute("location",location);
 
@@ -145,6 +154,7 @@ public class LocationController {
         Employee employee = location.getEmployeeById(Long.parseLong(employeeId));
         employeeDOA.deleteEmployee(employee,location);
 
+        model.addAttribute("location",location);
         return "locationSettings";
     }
 
@@ -195,6 +205,7 @@ public class LocationController {
                     Boolean holiday = Boolean.parseBoolean(l[4]);
                     int temp = Integer.parseInt(l[5]);
                     float rain = Float.parseFloat(l[6]);
+
                     // store data in sql database
                     storeSalesItem(date,sales,weekday,holiday,temp,rain,locationId);
 
@@ -252,7 +263,7 @@ public class LocationController {
      *
      * @return list with predicated sales values and real sales values
      */
-    protected static List<String[]> doTES(Long locationID){
+    public static List<String[]> doTES(Long locationID){
         String url = SQLDatabase.getUrl();
 
         List<String[]> forecastMap = new ArrayList<String[]>();
