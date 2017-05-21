@@ -11,7 +11,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-
+®
     <!-- Custom CSS -->
     <link href="/css/landing-page.css" rel="stylesheet">
 
@@ -20,9 +20,12 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+
     <!-- Custom Fonts -->
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="/css/price.css">
 </head>
 <body>
 
@@ -37,7 +40,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand topnav" href="\">Horeca Planner</a>
+            <a class="navbar-brand topnav" href="\">horeca toolkit</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -46,10 +49,10 @@
                     <a href="#top">Top</a>
                 </li>
                 <li>
-                    <a href="#how">Hoe</a>
+                    <a href="#how">Het Product</a>
                 </li>
                 <li>
-                    <a href="#contact">Contact</a>
+                    <a href="#price">Prijs</a>
                 </li>
             </ul>
         </div>
@@ -68,7 +71,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="intro-message">
-                        <h1>Horeca Planner 2.0</h1>
+                        <h1>horeca toolkit</h1>
                         <h3>Let us do your planning</h3>
                         <hr class="intro-divider">
                         <ul class="list-inline intro-social-buttons">
@@ -76,9 +79,9 @@
                                 <%--${message}--%>
                             <%--</li>--%>
                         <li>
-                            <button id ="login" class="btn btn-default btn-lg">Inloggen</button>
+                            <button id ="login" class="btn btn-danger btn-lg">Inloggen</button>
                         </li><li>
-                            <button id ="aanmelden" class="btn btn-default btn-lg">Aanmelden</button>
+                            <button id ="aanmelden" class="btn btn-danger btn-lg">Aanmelden</button>
                         </li>
                         </ul>
                     </div>
@@ -108,13 +111,13 @@
                         reviews. De planner checkt real-time bij wijzigingen of er meer personeel nodig is en checkt bij
                         het personeel wat de beschikbaarheid is. Dit aan de hand van de slimste technieken en kanalen
                         die het personeel op dit moment al gebruikt. Totale ontzorging waardoor u zich als restaurant
-                        ondernemer bezig kan houden waar u goed in bent; uw gasten blij maken.
+                        ondernemer bezig kan houden waar u goed in bent, uw gasten blij maken.
                     </p><p class = "lead">
                         Tevens kan aan de hand van salescijfers, bestellingen bepaald worden wat er door mensen besteld
                         kan worden waarop er slimmer ingekocht kan worden door het restaurant. </p>
                 </div>
                 <div class="col-lg-4 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/ipad.png" alt="">
+                    <img class="img-responsive" style="padding-top: 40%" src="img/ipad.png" alt="">
                 </div>
             </div>
 
@@ -128,12 +131,12 @@
         <div class="container">
 
             <div class="row">
-                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                <div class="col-lg-6 col-sm-push-6  col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
                     <h2 class="section-heading">Voordelen van het systeem voor de horeca ondernemer</h2>
                     <p class="lead">
-                        Uitendelijk worden uw gasten door deze oplossing blijer waardoor er betere reviews over
+                        Uitendelijk worden uw gasten door deze oplossing gelukkiger waardoor betere reviews over
                         jouw restaurant binnen komen. Het systeem zorgt voor een goede personeelsplanner u hoeft
                         alleen maar te controleren en valideren.
                     </p>
@@ -153,7 +156,57 @@
 
     </div>
 
-    <a  name="contact"></a>
+    <a  name="price"></a>
+    <div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <ul class="pricing p-red">
+                        <li>
+                            <img src="http://bread.pp.ua/n/settings_r.svg" alt="">
+                            <big>Een locatie</big>
+                        </li>
+                        <li>Maak roosters voor één locatie</li>
+                        <li>Omzetprognose</li>
+                        <li>Maak planningen vanaf elk type scherm</li>
+                        <li>
+                            <h3>€35</h3>
+                            <span>per maand</span>
+                        </li>
+                        <li>
+                            <button id ="aanmelden">Aanmelden</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <ul class="pricing p-blue">
+                        <li>
+                            <img src="http://bread.pp.ua/n/settings_b.svg" alt="">
+                            <big>Meerdere locaties</big>
+                        </li>
+                        <li>Maak roosters voor meerdere locaties</li>
+                        <li>Omzetprognose</li>
+                        <li>Maak planningen vanaf elk type scherm</li>
+                        <li>
+                            <h3>€75</h3>
+                            <span>per maand</span>
+                        </li>
+                        <li>
+                            <button id ="aanmelden">Aanmelden</button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
     <div class="banner">
 
         <div class="container">
@@ -165,7 +218,7 @@
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            ${message}
+                            <button id ="login" class="btn btn-danger btn-lg">Inloggen</button>
                         </li>
                     </ul>
                 </div>
@@ -174,7 +227,6 @@
         <!-- /.container -->
 
     </div>
-    <button id="sign-out">log out</button>
     <!-- /.banner -->
 </div>
 
@@ -203,11 +255,11 @@
                     </li>
                     <li class="footer-menu-divider">&sdot;</li>
                     <li>
-                        <a href="#how">Hoe</a>
+                        <a href="#how">Het product</a>
                     </li>
                     <li class="footer-menu-divider">&sdot;</li>
                     <li>
-                        <a href="#contact">Contact</a>
+                        <a href="#price">Prijs</a>
                     </li>
                 </ul>
                 <p class="copyright text-muted small">Copyright &copy; Horeca Planning 2017. All Rights Reserved</p>

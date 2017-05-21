@@ -21,7 +21,7 @@ public class EmployeeDOA {
         Employee employee = new Employee(employeeId,name,priceHour,skills,availableWeekdays,ex,hoursInContract);
 
         location.addEmployee(employee);
-        ofy().save().entities(employee,location).now();
+        ofy().save().entities(employee,location);
 
         return employee;
     }

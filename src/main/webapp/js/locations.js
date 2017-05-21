@@ -24,7 +24,8 @@ $(document).ready(function() {
         firebase.auth().onAuthStateChanged(function(user) {
 
             if (user) {
-                getForecast(user);
+                $("#userID").val(user.email);
+                getLocations(user);
             } else {
 
                 // window.location = "/"
@@ -32,18 +33,24 @@ $(document).ready(function() {
         });
     }
 
-    function getForecast(user) {
+    function getLocations(user) {
         console.log(user.email);
 
         $.ajax({
             type: "GET",
             url: "/getLocations",
             data: {userMail: user.email},
+            dataType: "json",
             success: function (response) {
-                {
-                    console.log(response);
-                    // $('#newProfile').show();SS
-                    // $('#loading').hide();
+
+                var xTable=document.getElementById('locationsList');
+                console.log(response);
+
+                for(var i = 0; i < response.length ; i++) {
+                    var tr=document.createElement('tr');
+                    tr.innerHTML = "<td><a href = '/location/"+response[i].id+"'>"+response[i].name+"</a></td>"+
+                    "<td>"+ response[i].address +"</td>";
+                    xTable.appendChild(tr);
                 }
             }
         });

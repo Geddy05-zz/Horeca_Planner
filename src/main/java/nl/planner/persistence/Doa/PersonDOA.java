@@ -37,7 +37,11 @@ public class PersonDOA {
         // First fetch it from the datastore.
         Person profile = ofy().load().key(
                 Key.create(Person.class, userID)).now();
-
+        if (profile == null) {
+            // Create a new Profile if not exist.
+            String email = userID;
+            profile = new Person(userID, email,email);
+        }
         return profile;
     }
 }

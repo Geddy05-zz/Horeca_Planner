@@ -41,8 +41,6 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class HomeController {
     private static final Logger logger = Logger.getLogger(HomeController.class.getName());
 
-
-
     @RequestMapping(value = "/")
     public String home(HttpServletRequest request, Model model) throws FileNotFoundException {
 
@@ -58,7 +56,6 @@ public class HomeController {
 //            logger.info(e.getLocalizedMessage());
 //        }
 //        FirebaseAuth.getInstance().verifyIdToken("");
-
 
 
         if (request.getUserPrincipal() != null) {
@@ -107,9 +104,9 @@ public class HomeController {
         Person profile = ofy().load().key(
                 Key.create(Person.class, mail)).now();
         if (profile != null){
-            return "{\"isNewUser \":0}";
+            return "0";
         }else{
-            return "{\"isNewUser \":1}";
+            return "1";
         }
     }
 
@@ -130,95 +127,14 @@ public class HomeController {
             return "redirect:/"+login;
         }
     }
-    //old
-//    @RequestMapping(value = "/dashboard")
-//    public String dashboard(HttpServletRequest request, Model model) throws Exception {
-//
-//        UserService userService = UserServiceFactory.getUserService();
-//        User user = userService.getCurrentUser();
-//
-//        Person person = PersonDOA.getPersonFromUser(user);
-//
-//        if (! person.getActivated()){
-//            return "redirect:/logout";
-//        }
-//
-//        List<String[]> forecastMap = ForecastService.getForecast(user.getUserId());
-//
-//        ofy().save().entity(person).now();
-//
-//        List< Weather>  weather = new WeatherRequest().getWeather(52.092876,5.104480);
-//
-//        Date date = new Date();
-//        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
-//
-//        List<String[]> weekOverview = new ArrayList<>();
-//        int nextDays =-1;
-//        for(String[] strl : forecastMap){
-//            if (strl[0].equals(modifiedDate) || nextDays > 0 ){
-//                if (strl[0].equals(modifiedDate)){
-//                    nextDays = 7;
-//                }
-//                int salesRounded = Math.round(Float.parseFloat(strl[2]));
-//                int waiters = Math.round(salesRounded / 700);
-//                int barkeepers = Math.round(salesRounded / 850);
-//                int kitchen = Math.round(salesRounded / 1000);
-//                logger.info(strl[0]);
-//                String[] value = new String[]{strl[0],String.valueOf(waiters),String.valueOf(barkeepers), String.valueOf(kitchen)};
-//                weekOverview.add(value);
-//                nextDays--;
-//            }
-//        }
-//
-//        String message = userService.createLogoutURL("/");
-//        model.addAttribute("message", message);
-//        model.addAttribute("locations",LocationDOA.listOfLocations(user));
-//        model.addAttribute("weatherForecast",weather);
-//        model.addAttribute("forecast",forecastMap);
-//        model.addAttribute("weekForecast",weekOverview);
-//
-//
-//        return "dashboard";
-//    }
+
     //new
     @RequestMapping(value = "/dashboard")
     public String dashboard(HttpServletRequest request, Model model) throws Exception {
 
-        // do forecast
-//        List<String[]> forecastMap = ForecastService.getForecast(user.getUserId());
-//
-//        ofy().save().entity(person).now();
-
         List< Weather>  weather = new WeatherRequest().getWeather(52.092876,5.104480);
 
-//        Date date = new Date();
-//        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
-//
-//        List<String[]> weekOverview = new ArrayList<>();
-//        int nextDays =-1;
-//        for(String[] strl : forecastMap){
-//            if (strl[0].equals(modifiedDate) || nextDays > 0 ){
-//                if (strl[0].equals(modifiedDate)){
-//                    nextDays = 7;
-//                }
-//                int salesRounded = Math.round(Float.parseFloat(strl[2]));
-//                int waiters = Math.round(salesRounded / 700);
-//                int barkeepers = Math.round(salesRounded / 850);
-//                int kitchen = Math.round(salesRounded / 1000);
-//                logger.info(strl[0]);
-//                String[] value = new String[]{strl[0],String.valueOf(waiters),String.valueOf(barkeepers), String.valueOf(kitchen)};
-//                weekOverview.add(value);
-//                nextDays--;
-//            }
-//        }
-//
-//        String message = userService.createLogoutURL("/");
-//        model.addAttribute("message", message);
-//        model.addAttribute("locations",LocationDOA.listOfLocations(user));
         model.addAttribute("weatherForecast",weather);
-//        model.addAttribute("forecast",forecastMap);
-//        model.addAttribute("weekForecast",weekOverview);
-
 
         return "dashboard";
     }
@@ -227,11 +143,23 @@ public class HomeController {
     public @ResponseBody List<String[]> forecast (HttpServletRequest request) throws Exception {
         String mail = request.getParameter("userMail");
         List<String[]> forecastMap = ForecastService.getForecast(mail);
-        return forecastMap;
 
+        // return last  50 results
+        if(forecastMap.size() > 50) {
+            return forecastMap.subList(forecastMap.size() - 50, forecastMap.size());
+        }
+
+        return forecastMap;
     }
 
+    @RequestMapping(value = "/dashboard/getLocations", method = RequestMethod.GET,produces = "application/json")
+    public @ResponseBody List<Location> getLocations (HttpServletRequest request) throws Exception {
+        String mail = request.getParameter("userMail");
 
+        List<Location>  locations = LocationDOA.listOfLocations(mail);
+
+        return locations;
+    }
 
     @RequestMapping(value = "/getEmployeeDemand/{date}", method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
@@ -241,7 +169,7 @@ public class HomeController {
         User user = userService.getCurrentUser();
 
         // Get forecast from mem cache
-        List<String[]> forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user).get(0).getId());
+        List<String[]> forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user.getUserId()).get(0).getId());
         String sales = "";
 
         // Get forecast for the selected day
@@ -250,7 +178,6 @@ public class HomeController {
             if(strl[0].equals(date)){
                 sales = strl[2];
             }
-
         }
 
         // Round values to integers

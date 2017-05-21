@@ -48,28 +48,38 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-green">
+            <div class="panel panel-green" id="Schedule">
                 <div class="panel-heading">
+                    <a class="whiteLink" id ="schedule" href="#">
                     <div class="row">
                         <div class="col-xs-3">
-                            <i class="fa fa-tasks fa-5x"></i>
+                            <i class="fa fa-table fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">8</div>
-                            <div>New Tasks!</div>
+                            <div class="huge">Schedule</div>
+                            <div>Create a schedule</div>
                         </div>
                     </div>
+                    </a>
                 </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <a class="whiteLink" id ="detail" href="#">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-building-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">Detail</div>
+                                <div>Show location details</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
         <div class="col-lg-3 col-md-6">
         </div>
@@ -78,7 +88,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="Sales-Chart">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Sales Chart</h3>
                 </div>
@@ -100,7 +110,7 @@
                     <div class="text-center">
                         <i class="fa fa-fw fa-calendar"></i>
                         Select a date
-                        <input type="text" id="datepicker"></p>
+                        <input type="text" id="datepicker">
                     </div>
                     <br />
                     <p>
@@ -123,42 +133,42 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="Tasks-Panel">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
                 </div>
                 <div class="panel-body">
                     <div class="list-group">
                         <a href="#" class="list-group-item">
-                            <span class="badge">28-03-2017</span>
+                            <span class="badge badge-info">28-03-2017</span>
                             <i class="fa fa-fw fa-truck"></i> Realisatie invoeren
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">01-04-2017</span>
+                            <span class="badge badge-info">01-04-2017</span>
                             <i class="fa fa-fw fa-comment"></i> Prognose aangepast herzie planning
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">02-04-2017</span>
+                            <span class="badge badge-info">02-04-2017</span>
                             <i class="fa fa-fw fa-comment"></i> Verandereing weersverwachting, herzie planning
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">10-04-2017</span>
+                            <span class="badge badge-info">10-04-2017</span>
                             <i class="fa fa-fw fa-calendar"></i> Personeel plannen
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">11-04-2017</span>
+                            <span class="badge badge-info">11-04-2017</span>
                             <i class="fa fa-fw fa-calendar"></i> Personeel plannen
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">12-04-2017</span>
+                            <span class="badge badge-info">12-04-2017</span>
                             <i class="fa fa-fw fa-calendar"></i> Personeel plannen
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">13-04-2017</span>
+                            <span class="badge badge-info">13-04-2017</span>
                             <i class="fa fa-fw fa-calendar"></i> Personeel plannen
                         </a>
                         <a href="#" class="list-group-item">
-                            <span class="badge">14-04-2017</span>
+                            <span class="badge badge-info">14-04-2017</span>
                             <i class="fa fa-fw fa-calendar"></i> Personeel plannen
                         </a>
                     </div>
@@ -169,9 +179,9 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="Logbook">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Logbook</h3>
+                    <h3 class="panel-title"><i class="fa fa-terminal fa-fw"></i> Logbook</h3>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -312,7 +322,8 @@
         </div>
     </div>
 </div>
-
+<link rel="stylesheet" href="/css/bootstrap-tour.min.css">
+<script src="/js/bootstrap-tour.min.js"></script>
 <script src="/js/dashboard.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>

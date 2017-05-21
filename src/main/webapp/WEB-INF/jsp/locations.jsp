@@ -15,7 +15,7 @@
     <div class="col-lg-10">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="fa fa-money fa-fw"></i> Locations</h1>
+                <h1 class="panel-title"><i class="fa fa-building fa-fw"></i> Locations</h1>
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
@@ -26,18 +26,8 @@
                             <th>address</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <%--<%--%>
-                            <%--List<Location> locations=(List<Location>) request.getAttribute("locations");--%>
-                            <%--for(Location location: locations){--%>
-                                <%--%>--%>
-                                 <%--<tr>--%>
-                                     <%--<td><a href = <%=  "/location/"+location.getId() %> ><%= location.getName()%></a></td>--%>
-                                    <%--<td><%= location.getAddress() %></td>--%>
-                                 <%--</tr>--%>
-                           <%--<%--%>
-                            <%--}--%>
-                        <%--%>--%>
+                        <tbody  id = "locationsList">
+
                         </tbody>
                     </table>
                 </div>
@@ -48,6 +38,8 @@
 
                         <!-- Form Name -->
                         <legend>Create a location</legend>
+                        <input id = "userID" type="hidden" name="userID">
+
 
                         <!-- Text input-->
                         <div class="form-group">

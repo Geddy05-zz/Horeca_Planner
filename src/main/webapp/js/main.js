@@ -4,8 +4,6 @@ $(document).ready(function(){
     // deploying the application to a live production environment, change to
     // https://backend-dot-<PROJECT_ID>.appspot.com as specified in the
     // backend's app.yaml file.
-    var backendHostUrl = 'http://localhost:8081';
-
     var newUser = false;
 
     // Initialize Firebase
@@ -50,10 +48,17 @@ $(document).ready(function(){
             succesURL = "/createProfile"
         }
 
-        console.log(succesURL)
+        console.log(succesURL);
         var uiConfig = {
-            'signInSuccessUrl': "/",
-            'signInOptions': [
+            queryParameterForWidgetMode: 'mode',
+            // Query parameter name for sign in success url.
+            queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
+            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+            signInFlow: 'popup',
+            signInSuccessUrl: '/createProfile',
+            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+            // signInSuccessUrl: '/createProfile',
+            signInOptions: [
                 // Leave the lines as is for the providers you want to offer your users.
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                 // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
@@ -62,11 +67,12 @@ $(document).ready(function(){
                 firebase.auth.EmailAuthProvider.PROVIDER_ID
             ],
             // Terms of service url
-            'tosUrl': '<your-tos-url>',
+            tosUrl: '<your-tos-url>',
         };
 
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', uiConfig);
+
     }
 
     // [START signOutBtn]
@@ -93,7 +99,7 @@ $(document).ready(function(){
 
     document.getElementById("aanmelden").onclick = function() {
         configureFirebaseLoginWidget(true);
-        newUser = true
+        newUser = true;
         $('#main').hide();
         $('#log-in').show();
     }

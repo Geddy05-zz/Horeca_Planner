@@ -38,6 +38,7 @@
 
                 <!-- Text input-->
                 <div class="form-group">
+                    <input id="userID" type="hidden" name="userID">
                     <label class="col-md-4 control-label" for="Name (Full name)">Name (Full name)</label>
                     <div class="col-md-4">
                         <div class="input-group">
@@ -148,7 +149,7 @@
                     <div class="col-md-4">
                         <input  class="btn btn-success" type="submit" value="Submit" />
                         <%--<a href="#" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Submit</a>--%>
-                        <a href="#" class="btn btn-danger" value=""><span class="glyphicon glyphicon-remove-sign"></span> Clear</a>
+                        <a onclick="logOut();" class="btn btn-danger" value=""><span class="glyphicon glyphicon-remove-sign"></span> Cancel</a>
                     </div>
                 </div>
 

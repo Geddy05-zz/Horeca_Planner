@@ -12,21 +12,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="/layout/header.jsp" %>
 <% Location location = (Location) request.getAttribute("location");
-    List<List<List<List<Employee>>>> planning = null;
+    List<List<List<List<Employee>>>> planning = new ArrayList();
     if(location != null) {
         planning = location.getPlanning();
     }
 %>
-
 <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4 medium" >
+    <div class="col-md-3"></div>
+    <div class="col-md-6 medium" >
         Week
-        <button type="submit" class="btn btn-link btn-lg">
+        <button onclick="lastWeek()" class="btn btn-link btn-lg">
             <span class="fa fa-arrow-left fa-lg" aria-hidden="true"></span>
         </button>
-        23
-        <button type="submit" class="btn btn-link btn-lg">
+        <span id="weeknr">23</span>
+        <button onclick="nextWeek()" class="btn btn-link btn-lg">
             <span class="fa fa-arrow-right fa-lg" aria-hidden="true"></span>
         </button>
     </div>
@@ -36,6 +35,9 @@
 %>
 <div class = "row">
     <form class="form-horizontal" method="POST">
+        <input name="userID" id="userID" type="hidden" >
+        <input id = "locationID" type="hidden" name="locationID" value=${locationId}>
+
         <input  class="btn btn-success" type="submit" value="Submit" />
     </form>
 </div>
@@ -51,9 +53,8 @@
 <div class="row">
     <br/>
     <%
-
     if(weekday == 1){
-        %>
+    %>
         <h2>Monday</h2>
     <%
     }else if(weekday == 2){
@@ -93,7 +94,7 @@
         <h4>Middag:</h4>
         <table>
                 <%
-                }else{
+         }else{
                     %>
             <br/>
             <h4>Avond:</h4>
@@ -146,5 +147,5 @@
     }%>
 
 <%--</div>--%>
-
+<script src="/js/schedule.js"></script>
 <%@ include file="/layout/footer.jsp" %>

@@ -28,16 +28,19 @@ $(document).ready(function() {
         firebase.auth().onAuthStateChanged(function(user) {
 
             if (user) {
+                $("#userID").val(user.email);
                 console.log(user.email);
                 $.ajax({
                     type: "POST",
                     url: "/login",
                     data: {userMail: user.email},
                     success: function (response) {
-                        {
-                            console.log(response);
-                            $('#newProfile').show();
-                            $('#loading').hide();
+
+                            if(response == 0){
+                                window.location = "/dashboard"
+                            }else {
+                                $('#newProfile').show();
+                                $('#loading').hide();
                         }
                     }
 
@@ -59,3 +62,11 @@ $(document).ready(function() {
     FirbaseInit();
     checkUser();
 });
+
+function logOut(){
+    firebase.auth().signOut().then(function() {
+        window.location = "/";
+    }, function(error) {
+        console.log(error);
+    });
+}

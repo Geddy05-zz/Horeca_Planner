@@ -70,10 +70,27 @@ public class LocationController {
         return locations;
     }
 
+    @RequestMapping(value = "/getLocation", method = RequestMethod.GET)
+    public @ResponseBody
+    Location getlocation(HttpServletRequest request, Model model){
+
+        String mail = request.getParameter("userMail");
+        Long locationID = Long.parseLong(request.getParameter("locationID"));
+        List<Location> locations = ofy().load().type(Location.class).ancestor(Key.create(Person.class, mail)).list();
+        Location location = null;
+        for(Location location1 : locations){
+            if(location1.getId() == locationID){
+
+            }
+        }
+
+        return location;
+    }
+
     @RequestMapping(value = "/locations", method = RequestMethod.POST)
     public String addLocation(HttpServletRequest request, Model model){
 
-        String mail = request.getParameter("userMail");
+        String mail = request.getParameter("userID");
         model.addAttribute("person", PersonDOA.getPersonFromUserID(mail));
 
         String name = request.getParameter("Name");
@@ -89,27 +106,35 @@ public class LocationController {
 
     @RequestMapping(value = "/location/{locationId}", method = RequestMethod.GET)
     public String location(@PathVariable String locationId,HttpServletRequest request,Model model){
-        if (request.getUserPrincipal() == null){
-            return "redirect:/";
-        }
+//        if (request.getUserPrincipal() == null){
+//            return "redirect:/";
+//        }
         logger.info(locationId);
 
         List<String[]> forecastMap = doTES(Long.parseLong(locationId));
 
-        User user = userService.getCurrentUser();
-        Location location = locationDOA.getLocationFromId(user,locationId);
-
-
-//        List<List<List<List<Employee>>>> planning = location.getPlanning();
         model.addAttribute("forecast",forecastMap);
-        model.addAttribute("location",location);
+        model.addAttribute("locationId",locationId);
         return "locationSettings";
+    }
+
+    @RequestMapping(value = "/location/getEmployees", method = RequestMethod.GET)
+    public @ResponseBody List<Employee> getEmployees(HttpServletRequest request,Model model){
+        String locationId = request.getParameter("locationID");
+        String userID = request.getParameter("userMail");
+
+        Location location = locationDOA.getLocationFromId(userID,locationId);
+        logger.info(" get EMPLOYEES !!!!!!!!!!!!!!");
+
+        logger.info(location.getEmployees().toString());
+        return location.getEmployees();
     }
 
     @RequestMapping(value = "/location/addEmployee", method = RequestMethod.POST)
     public String addEmployee(HttpServletRequest request,Model model){
 
         String locationId = request.getParameter("locationId");
+        String userID = request.getParameter("userID");
         String name = request.getParameter("name");
         String surname = request.getParameter("name1");
         String dateOfBirth = request.getParameter("date");
@@ -133,29 +158,26 @@ public class LocationController {
             weekdaysAv[i] = Integer.parseInt(weekdaysA[i]);
         }
 
-        // create the user and upload to datastore.
-        User user = userService.getCurrentUser();
-        Location location = locationDOA.getLocationFromId(user,locationId);
-        employeeDOA.createEmployee(location,name,price, skills, weekdaysAv,Experience.forValue(experienceNr),contractHours);
+        // create the user and store in datastore.
+        Location location = locationDOA.getLocationFromId(userID,locationId);
+        Employee employee = employeeDOA.createEmployee(location,name,price, skills, weekdaysAv,Experience.forValue(experienceNr),contractHours);
 
-        model.addAttribute("location",location);
-
-        return "locationSettings";
+        return "redirect:/location/"+location.getId();
     }
 
     @RequestMapping(value = "/location/deleteEmployee", method = RequestMethod.POST)
     public String deleteEmployee(HttpServletRequest request,Model model){
 
-        User user = userService.getCurrentUser();
         String locationId = request.getParameter("locationId");
+        String userID = request.getParameter("userID");
         String employeeId = request.getParameter("employeeId");
 
-        Location location = locationDOA.getLocationFromId(user,locationId);
+        Location location = locationDOA.getLocationFromId(userID,locationId);
         Employee employee = location.getEmployeeById(Long.parseLong(employeeId));
         employeeDOA.deleteEmployee(employee,location);
 
         model.addAttribute("location",location);
-        return "locationSettings";
+        return "redirect:/location/"+location.getId();
     }
 
     //TODO: deal with correct date front-end and backend
@@ -163,6 +185,7 @@ public class LocationController {
     public String addSalesOfDay(HttpServletRequest request,Model model)throws Exception {
 
         String locationId = request.getParameter("locationId");
+        String UserId = request.getParameter("userIDSales");
         String sales = request.getParameter("number");
         String dateString = request.getParameter("date");
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -174,8 +197,7 @@ public class LocationController {
 
         storeSalesItem(date,Float.parseFloat(sales),weekday,holiday,temp,rain,locationId);
 
-        User user = userService.getCurrentUser();
-        Location location = locationDOA.getLocationFromId(user,locationId);
+        Location location = locationDOA.getLocationFromId(UserId,locationId);
 
         model.addAttribute("location",location);
         return "locationSettings";
@@ -184,7 +206,7 @@ public class LocationController {
     @RequestMapping(value="/location/uploadCSV/{locationId}" , method = RequestMethod.POST)
     public String uploadCSV(@PathVariable String locationId,HttpServletRequest request,Model model) throws IOException, ParseException {
 
-        User user = userService.getCurrentUser();
+        String user =  request.getParameter("userID");
 
         CSVReader reader = new CSVReader(request.getReader());
 
@@ -215,9 +237,7 @@ public class LocationController {
             }
         }
 
-        Location location = locationDOA.getLocationFromId(user,locationId);
-
-        model.addAttribute("location",location);
+        model.addAttribute("location",locationId);
 
         return "locationSettings";
     }

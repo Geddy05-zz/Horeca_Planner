@@ -30,16 +30,16 @@ public class LocationDOA {
      * @param user the user
      * @return all the users locations
      */
-    public static List<Location> listOfLocations(User user){
-        List<Location> locations = ofy().load().type(Location.class)
-                .ancestor(Key.create(Person.class, user.getUserId()))
-                .list();
-
-        if(locations == null){
-            return new ArrayList<>();
-        }
-        return locations;
-    }
+//    public static List<Location> listOfLocations(User user){
+//        List<Location> locations = ofy().load().type(Location.class)
+//                .ancestor(Key.create(Person.class, user.getUserId()))
+//                .list();
+//
+//        if(locations == null){
+//            return new ArrayList<>();
+//        }
+//        return locations;
+//    }
 
     /**
      * get all the location from a given user

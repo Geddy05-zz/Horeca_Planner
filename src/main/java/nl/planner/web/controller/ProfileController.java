@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,24 +25,26 @@ public class ProfileController {
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String profile(Model model){
-        User user = userService.getCurrentUser();
-        if (!userService.isUserLoggedIn()){
-            return "redirect:/";
-        }
-//        User user = userService.getCurrentUser();
-        String userId = userService.getCurrentUser().getUserId();
-        model.addAttribute("person", PersonDOA.getPersonFromUser(user));
+
         return "profile";
+    }
+
+    @RequestMapping(value = "/getPerson", method = RequestMethod.GET)
+    public @ResponseBody Person getPerson(HttpServletRequest request ,Model model){
+        String userId =  request.getParameter("userMail");
+
+        return PersonDOA.getPersonFromUserID(userId);
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.POST)
     public String saveProfile(HttpServletRequest request, Model model){
-        User user = userService.getCurrentUser();
-
-        if (!userService.isUserLoggedIn()){
-            return "redirect:/";
-        }
-        String userId = userService.getCurrentUser().getUserId();
+//        User user = userService.getCurrentUser();
+//
+//        if (!userService.isUserLoggedIn()){
+//            return "redirect:/";
+//        }
+//        String userId = userService.getCurrentUser().getUserId();
+        String userId =  request.getParameter("userID");
 
         String name = request.getParameter("Name (Full name)");
         String dateOfBirth = request.getParameter("Date Of Birth");
@@ -51,11 +54,11 @@ public class ProfileController {
         String secondaryPhone = request.getParameter("Secondary Phone number");
         String overview = request.getParameter("Overview (max 200 words)");
 
-        Person person = PersonDOA.getPersonFromUser(user);
+        Person person = PersonDOA.getPersonFromUserID(userId);
         person.update(name,dateOfBirth,gender,address,primaryPhone,secondaryPhone,overview);
         ofy().save().entity(person).now();
 
-        model.addAttribute("person",PersonDOA.getPersonFromUser(user));
+        model.addAttribute("person",PersonDOA.getPersonFromUserID(userId));
 
         return "profile";
     }
@@ -63,19 +66,15 @@ public class ProfileController {
     @RequestMapping(value = "/createProfile", method = RequestMethod.GET)
     public String createProfilePage(Model model) {
 
-        String mail = "fasdf";
-        Person person = new Person(mail, mail,mail);
-
-        model.addAttribute("person",person);
+        model.addAttribute("person",new Person("", "",""));
         return "createProfile";
     }
 
     @RequestMapping(value = "/createProfile", method = RequestMethod.POST)
     public String createProfile(HttpServletRequest request) {
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
-        String userId = request.getParameter("Name (Full name)");
-        String email = request.getParameter("Name (Full name)");
+
+        String userId = request.getParameter("userID");
+        String email = request.getParameter("userID");
         Person person = new Person(userId, email,email);
 
         String name = request.getParameter("Name (Full name)");

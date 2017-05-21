@@ -14,12 +14,10 @@ import nl.planner.persistence.Doa.LocationDOA;
 import nl.planner.persistence.entity.Employee;
 import nl.planner.persistence.entity.Location;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -34,28 +32,49 @@ public class PlanningController {
 
 
     @RequestMapping(value = "location/{locationId}/createSchedule", method = RequestMethod.POST)
-    public String createSchedule() {
+    public String createSchedulePost(@PathVariable String locationId,HttpServletRequest request,Model model) {
         // Add the task to the default queue.
-        UserService userService = UserServiceFactory.getUserService();
-        String userId = userService.getCurrentUser().getUserId();
-        Bootstrap.queue.add(TaskOptions.Builder.withUrl("/worker")
-                .param("locationID", "89")
-                .param("userID", userId));
 
-        return "profile";
+        String mail = request.getParameter("userID");
+//        String locationID = request.getParameter("locationID");
+
+        Bootstrap.queue.add(TaskOptions.Builder.withUrl("/worker/"+locationId)
+                .param("locationID", locationId)
+                .param("userID", mail));
+
+        model.addAttribute("locationId", locationId);
+
+        return "Schedule";
+    }
+
+    @RequestMapping(value = "location/{locationId}/getSchedule", method = RequestMethod.GET)
+    public @ResponseBody List<List<List<List<Employee>>>> getSchedule(@PathVariable String locationId, HttpServletRequest request,Model model) {
+        // Add the task to the default queue.
+
+        String mail = request.getParameter("userMail");
+        String week = request.getParameter("weeknr");
+        String locationID = locationId;
+        LocationDOA locationDOA = new LocationDOA();
+        Location location = locationDOA.getLocationFromId(mail, locationId);
+
+        return location.getPlanning();
     }
 
     @RequestMapping(value = "location/{locationId}/createSchedule", method = RequestMethod.GET)
     public String showSchedule(@PathVariable String locationId, Model model) {
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
-        LocationDOA locationDOA = new LocationDOA();
-        Location location = locationDOA.getLocationFromId(user, locationId);
+//
+//        String mail = request.getParameter("userMail");
+//
+//        LocationDOA locationDOA = new LocationDOA();
+//        Location location = locationDOA.getLocationFromId(user, locationId);
+//
+//        if (location == null) {
+//            return "redirect:/dashboard";
+//        }
+//        model.addAttribute("location", location);
 
-        if (location == null) {
-            return "redirect:/dashboard";
-        }
-        model.addAttribute("location", location);
+        model.addAttribute("locationId", locationId);
+
         return "Schedule";
     }
 
@@ -75,10 +94,9 @@ public class PlanningController {
     }
 
 
-    @RequestMapping(value = "/worker", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/{locationID}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void createSchedule(HttpServletRequest request) {
-        String locationID = request.getParameter("locationID");
+    public void createSchedule(@PathVariable String locationID,HttpServletRequest request) {
         String userID = request.getParameter("userID");
 
         List<List<int[]>> planningFrame = createScheduleFrame(userID);
