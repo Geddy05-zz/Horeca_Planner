@@ -235,6 +235,7 @@
             </div>
         </div>
     </div>
+    <% if(weather != null){ %>
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
@@ -321,6 +322,7 @@
             </div>
         </div>
     </div>
+    <% }%>
 </div>
 <link rel="stylesheet" href="/css/bootstrap-tour.min.css">
 <script src="/js/bootstrap-tour.min.js"></script>

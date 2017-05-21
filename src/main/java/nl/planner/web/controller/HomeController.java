@@ -131,11 +131,12 @@ public class HomeController {
     //new
     @RequestMapping(value = "/dashboard")
     public String dashboard(HttpServletRequest request, Model model) throws Exception {
-
-        List< Weather>  weather = new WeatherRequest().getWeather(52.092876,5.104480);
+        List< Weather>  weather = null;
+        try{
+            weather = new WeatherRequest().getWeather(52.092876,5.104480);
+        }catch (Exception e){};
 
         model.addAttribute("weatherForecast",weather);
-
         return "dashboard";
     }
 
