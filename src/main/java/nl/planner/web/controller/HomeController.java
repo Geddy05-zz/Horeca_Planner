@@ -3,36 +3,22 @@ package nl.planner.web.controller;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseCredential;
-import com.google.firebase.auth.FirebaseCredentials;
-import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.tasks.OnSuccessListener;
-import com.google.firebase.tasks.Task;
 import com.googlecode.objectify.Key;
 import nl.planner.ForecastService;
 import nl.planner.boot.Bootstrap;
 import nl.planner.boot.WeatherRequest;
-import nl.planner.persistence.Doa.LocationDOA;
-import nl.planner.persistence.Doa.PersonDOA;
+import nl.planner.persistence.DAO.LocationDAO;
 import nl.planner.persistence.entity.Location;
 import nl.planner.persistence.entity.Person;
 import nl.planner.persistence.entity.Weather;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.*;
 
-import javax.cache.Cache;
-import javax.cache.CacheFactory;
-import javax.cache.CacheManager;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -44,32 +30,8 @@ public class HomeController {
     @RequestMapping(value = "/")
     public String home(HttpServletRequest request, Model model) throws FileNotFoundException {
 
-//        FileInputStream serviceAccount = new FileInputStream("WEB-INF/firebaseSettings.json");
-//
-//        FirebaseOptions options = new FirebaseOptions.Builder()
-//                .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-//                .build();
-//
-//        try {
-//            FirebaseApp.initializeApp(options);
-//        }catch (Exception e){
-//            logger.info(e.getLocalizedMessage());
-//        }
-//        FirebaseAuth.getInstance().verifyIdToken("");
-
-
         if (request.getUserPrincipal() != null) {
             return "redirect:dashboard";
-        }
-        else {
-            String thisUrl = request.getRequestURI()+ "login";
-            UserService userService = UserServiceFactory.getUserService();
-
-            // ToDo clean up. Remove all html tags from this function
-            String message = "<a href=\""
-                    + userService.createLoginURL(thisUrl)
-                    + " \" class=\"btn btn-default btn-lg\" ><span class=\"network-name\">sign in</span></a> ";
-            model.addAttribute("message", message);
         }
 
         model.addAttribute("Title", "Home page");
@@ -78,10 +40,12 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/getSales")
-    public  @ResponseBody List<Location> getLocations() {
+    public  @ResponseBody List<Location> getSales( HttpServletRequest request) {
 
-        UserService userService = UserServiceFactory.getUserService();
-//        return LocationDOA.listOfLocations(userService.getCurrentUser());
+        String mail = request.getParameter("userMail");
+        String locationID = request.getParameter("locationID");
+        Location location = LocationDAO.getLocationFromId(mail,locationID);
+
         return new ArrayList<>();
     }
 
@@ -103,9 +67,12 @@ public class HomeController {
         String mail = request.getParameter("userMail");
         Person profile = ofy().load().key(
                 Key.create(Person.class, mail)).now();
+
+        // returns if the user have a profile or not
         if (profile != null){
             return "0";
-        }else{
+        }
+        else{
             return "1";
         }
     }
@@ -116,11 +83,13 @@ public class HomeController {
         logger.info(userId);
         Person profile = ofy().load().key(
                 Key.create(Person.class, userId)).now();
+
         if (profile != null){
             profile.activateAccount();
             ofy().save().entity(profile).now();
             return "redirect:/dashboard";
-        }else{
+        }
+        else{
             UserService userService = UserServiceFactory.getUserService();
             String thisUrl = request.getRequestURI()+ "login";
             String login = userService.createLoginURL(thisUrl);
@@ -128,13 +97,17 @@ public class HomeController {
         }
     }
 
-    //new
     @RequestMapping(value = "/dashboard")
     public String dashboard(HttpServletRequest request, Model model) throws Exception {
+
+        // get weather data
         List< Weather>  weather = null;
         try{
             weather = new WeatherRequest().getWeather(52.092876,5.104480);
-        }catch (Exception e){};
+        }
+        catch (Exception e){
+            logger.warning(e.getMessage());
+        }
 
         model.addAttribute("weatherForecast",weather);
         return "dashboard";
@@ -157,20 +130,18 @@ public class HomeController {
     public @ResponseBody List<Location> getLocations (HttpServletRequest request) throws Exception {
         String mail = request.getParameter("userMail");
 
-        List<Location>  locations = LocationDOA.listOfLocations(mail);
+        List<Location>  locations = LocationDAO.listOfLocations(mail);
 
         return locations;
     }
 
     @RequestMapping(value = "/getEmployeeDemand/{date}", method = RequestMethod.GET,produces = "application/json")
-    @ResponseBody
-    public String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model){
+    public @ResponseBody String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model){
 
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
+        String mail = request.getParameter("userMail");
 
         // Get forecast from mem cache
-        List<String[]> forecastMap = (List<String[]>) Bootstrap.cache.get(LocationDOA.listOfLocations(user.getUserId()).get(0).getId());
+        List<String[]> forecastMap = ForecastService.getForecast(mail);
         String sales = "";
 
         // Get forecast for the selected day

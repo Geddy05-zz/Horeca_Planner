@@ -1,14 +1,12 @@
 package nl.planner.web.controller;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import nl.planner.MailService;
-import nl.planner.persistence.Doa.PersonDOA;
+import nl.planner.persistence.DAO.PersonDAO;
 import nl.planner.persistence.entity.Person;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +31,7 @@ public class ProfileController {
     public @ResponseBody Person getPerson(HttpServletRequest request ,Model model){
         String userId =  request.getParameter("userMail");
 
-        return PersonDOA.getPersonFromUserID(userId);
+        return PersonDAO.getPersonFromUserID(userId);
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.POST)
@@ -54,11 +52,11 @@ public class ProfileController {
         String secondaryPhone = request.getParameter("Secondary Phone number");
         String overview = request.getParameter("Overview (max 200 words)");
 
-        Person person = PersonDOA.getPersonFromUserID(userId);
+        Person person = PersonDAO.getPersonFromUserID(userId);
         person.update(name,dateOfBirth,gender,address,primaryPhone,secondaryPhone,overview);
         ofy().save().entity(person).now();
 
-        model.addAttribute("person",PersonDOA.getPersonFromUserID(userId));
+        model.addAttribute("person", PersonDAO.getPersonFromUserID(userId));
 
         return "profile";
     }

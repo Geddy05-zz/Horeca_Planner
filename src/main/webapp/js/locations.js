@@ -43,11 +43,11 @@ $(document).ready(function() {
             dataType: "json",
             success: function (response) {
 
-                var xTable=document.getElementById('locationsList');
+                let xTable=document.getElementById('locationsList');
                 console.log(response);
 
-                for(var i = 0; i < response.length ; i++) {
-                    var tr=document.createElement('tr');
+                for(let i = 0; i < response.length ; i++) {
+                    let tr=document.createElement('tr');
                     tr.innerHTML = "<td><a href = '/location/"+response[i].id+"'>"+response[i].name+"</a></td>"+
                     "<td>"+ response[i].address +"</td>";
                     xTable.appendChild(tr);
@@ -58,4 +58,19 @@ $(document).ready(function() {
 
     FirbaseInit();
     checkUser();
+});
+
+$("#addLocation").submit(function (e) {
+    let url = "/locations";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: $("#addLocation").serialize(),
+        success: function (data) {
+            alert("Location is saved");
+            location.reload(true);
+        }
+    });
+    e.preventDefault();
 });

@@ -1,10 +1,6 @@
 package nl.planner.machineLearning.roostering;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import nl.planner.persistence.Doa.EmployeeDOA;
-import nl.planner.persistence.Doa.LocationDOA;
+import nl.planner.persistence.DAO.LocationDAO;
 import nl.planner.persistence.entity.Employee;
 import nl.planner.persistence.entity.Location;
 import nl.planner.persistence.entity.Skill;
@@ -22,7 +18,7 @@ public class EmployeePool {
 
     public EmployeePool(String locationID,String userID, int dayNumber){
 
-        LocationDOA locationDOA = new LocationDOA();
+        LocationDAO locationDOA = new LocationDAO();
         Location location =locationDOA.getLocationFromId(userID,locationID);
 
         for(Employee e : location.getEmployees()){

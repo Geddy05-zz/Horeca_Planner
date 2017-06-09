@@ -1,31 +1,35 @@
 function drawSalesChart (data){
-    var dataList = [];
-    for(var i = 0; i < data.length;i++){
-        if(data[i][1] == "-"){
-            dataList.push({year:  data[i][0]  ,  forecast: data[i][2] })
-        }else{
-            dataList.push({year:  data[i][0] ,value:  data[i][1]  ,  forecast: data[i][2] })
+    if(data.length > 0) {
+        $("#salesChartNoData").hide();
+
+        let dataList = [];
+        for (let i = 0; i < data.length; i++) {
+            if (data[i][1] == "-") {
+                dataList.push({year: data[i][0], forecast: data[i][2]})
+            } else {
+                dataList.push({year: data[i][0], value: data[i][1], forecast: data[i][2]})
+            }
         }
+
+        new Morris.Line({
+            // ID of the element in which to draw the chart.
+            element: 'salesChart',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: dataList,
+            // The name of the data record attribute that contains x-values.
+            xkey: 'year',
+            xLabels: "day",
+
+            pointSize: 0,
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['value', 'forecast'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            resize: true,
+            labels: ['Sales', 'Forecast']
+        });
     }
-
-    new Morris.Line({
-        // ID of the element in which to draw the chart.
-        element: 'salesChart',
-        // Chart data records -- each entry in this array corresponds to a point on
-        // the chart.
-        data: dataList,
-        // The name of the data record attribute that contains x-values.
-        xkey: 'year',
-        xLabels:"day",
-
-        pointSize:0,
-        // A list of names of data record attributes that contain y-values.
-        ykeys: ['value','forecast'],
-        // Labels for the ykeys -- will be displayed when you hover over the
-        // chart.
-        resize: true,
-        labels: ['Sales','Forecast']
-    });
 }
 
 function getForecast(user) {
@@ -53,19 +57,22 @@ function setPanelUrl(locations){
         let url = "location/"+loc.id;
         $("#schedule").attr("href",url+"/createSchedule");
         $("#detail").attr("href",url);
+        $("#locationID").val(loc.id);
     }
 }
 
 function getSales() {
-    $.ajax({
-        url: '/getSales',
-        type: "GET",
-        dataType: "json",
-        async: true,
-        success: function (data) {
-            drawSalesGraph(data);
-        }
-    });
+    // $.ajax({
+    //     url: '/getSales',
+    //     type: "GET",
+    //     data: {userMail: user.email, locationID : $("#locationID").val()},
+    //     dataType: "json",
+    //     async: true,
+    //     success: function (data) {
+    //         console.log(data);
+    //         drawSalesGraph(data);
+    //     }
+    // });
 }
 
 function tour() {
@@ -110,6 +117,7 @@ function getLocations(user){
         dataType: "json",
         success: function (response) {
             console.log(response);
+            $("#userId").val(user.email);
             setPanelUrl(response);
             getForecast(user);
             getSales();
@@ -141,6 +149,7 @@ $(document).ready(function() {
         firebase.auth().onAuthStateChanged(function(user) {
 
             if (user) {
+                $("#userId").val(user.email);
                 getLocations(user);
             } else {
 
@@ -160,6 +169,7 @@ $("#datepicker").datepicker({
         $.ajax({
             url: '/getEmployeeDemand/'+dateText.toString(),
             type: "GET",
+            data: {userMail: $("#userId").val()},
             dataType: "json",
             success: function (data) {
                 showEmployeesNeeded(data);

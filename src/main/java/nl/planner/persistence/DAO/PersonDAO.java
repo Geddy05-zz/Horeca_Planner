@@ -1,4 +1,4 @@
-package nl.planner.persistence.Doa;
+package nl.planner.persistence.DAO;
 
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.Key;
@@ -9,7 +9,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Created by Geddy on 24-3-2017.
  */
-public class PersonDOA {
+public class PersonDAO {
 
     /**
      * Get the person profile from User in the request header

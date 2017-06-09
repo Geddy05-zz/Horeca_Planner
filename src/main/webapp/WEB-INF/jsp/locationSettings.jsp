@@ -264,7 +264,109 @@
             </div>
             <div id="organisationPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
-
+                    <form id="editOrganisation" class="form-horizontal"  method="POST">
+                        <div class="form-group ">
+                            <label class="control-label requiredField" for="nameEdit">
+                                Name
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="form-control" id="nameEdit" name="name" type="text" />
+                        </div> <%-- name --%>
+                        <div class="form-group ">
+                            <label class="control-label requiredField" for="postalEdit">
+                                Postal code
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="form-control" id="postalEdit" name="postal" type="text" />
+                        </div> <%-- Postal code --%>
+                        <div class="form-group ">
+                            <label class="control-label requiredField" for="addressEdit">
+                                Address
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="form-control" id="addressEdit" name="Adress" type="text"/>
+                        </div> <%-- Adress --%>
+                        <div class="form-group ">
+                            <label class="control-label requiredField" for="CityEdit">
+                                City
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="form-control" id="CityEdit" name="City" type="text" />
+                        </div> <%-- City --%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="mo">
+                                Monday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="mo" name="mo" type="text" />
+                        </div> <%-- monday--%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="tu">
+                                Tuesday
+                            </label>
+                            <input class="col-md-6" id="tu" name="tu" type="text" />
+                        </div> <%-- tuesday--%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="we">
+                                Wednesday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="we" name="we" type="text" />
+                        </div> <%-- wednesday--%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="th">
+                                Thursday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="th" name="th" type="text" />
+                        </div> <%-- thursday --%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="fr">
+                                Friday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="fr" name="fr" type="text" />
+                        </div> <%-- friday--%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="sa">
+                                Saturday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="sa" name="sa" type="text" />
+                        </div> <%-- saturday --%>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-6" for="mo">
+                                Sunday
+                                <span class="asteriskField">
+                                *
+                                </span>
+                            </label>
+                            <input class="col-md-6" id="su" name="su" type="text" />
+                        </div> <%-- sunday --%>
+                        <input id="locationIdEdit" type="hidden" name="locationId" value="${locationId}">
+                        <input id="userIDOrganisation" type="hidden" name="userID">
+                        <div class="form-group">
+                            <input class="btn btn-success" type="submit" value="submit" >
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -282,15 +384,15 @@
             <div class="col-md-4">
                 <label>Organisation name:</label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="organisationName">
                 Incentro
             </div>
         </div>
         <div class="col-lg-12">
-            <div class="col-lg-4">
+            <div class="col-lg-4" >
                 <label>Postal code:</label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="organisationPostal">
                 5555 LL
             </div>
         </div>
@@ -298,7 +400,7 @@
             <div class="col-md-4">
                 <label>Adress:</label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="organisationAddress">
                 Papendorpseweg 107
             </div>
         </div>
@@ -306,7 +408,7 @@
             <div class="col-md-4">
                 <label>City:</label>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="organisationCity">
                 Utrecht
             </div>
         </div>
@@ -316,13 +418,13 @@
             </div>
             <div class="col-md-8">
                 <ul style="list-style-type:none; padding: 0">
-                    <li>mo: 14:00 - 20:00</li>
-                    <li>tu: 12:00 - 20:00</li>
-                    <li>we: 12:00 - 21:00</li>
-                    <li>th: 12:00 - 23:00</li>
-                    <li>fr: 12:00 - 23:00</li>
-                    <li>sa: 12:00 - 23:00</li>
-                    <li>su: 12:00 - 21:00</li>
+                    <li id="moOpen">mo: 14:00 - 20:00</li>
+                    <li id="tuOpen">tu: 12:00 - 20:00</li>
+                    <li id="weOpen">we: 12:00 - 21:00</li>
+                    <li id="thOpen">th: 12:00 - 23:00</li>
+                    <li id="frOpen">fr: 12:00 - 23:00</li>
+                    <li id="saOpen">sa: 12:00 - 23:00</li>
+                    <li id="suOpen">su: 12:00 - 21:00</li>
                 </ul>
             </div>
         </div>

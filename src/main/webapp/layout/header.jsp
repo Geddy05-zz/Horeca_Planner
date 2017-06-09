@@ -3,7 +3,7 @@
 <head>
     <title>Title</title>
     <!-- Bootstrap Core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
     <link href="/css/plugins/morris.css" rel="stylesheet">

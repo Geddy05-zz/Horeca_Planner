@@ -58,6 +58,47 @@ function getEmployees(){
     });
 }
 
+function getLocation(){
+    let locationID = document.getElementById('locationIdEdit').value;
+    let userID = document.getElementById('userIDOrganisation').value;
+    $.ajax({
+        type: "GET",
+        url: "/getLocation",
+        data: {userMail: userID,locationID: locationID},
+        async: true,
+        dataType: "json",
+        success: function (location) {
+            {
+                // change values in organisation settings panel
+                $("#nameEdit").val(location.name);
+                $("#postalEdit").val(location.postal);
+                $("#addressEdit").val(location.address);
+                $("#CityEdit").val(location.city);
+                $("#mo").val(location.openingHoursMonday);
+                $("#tu").val(location.openingHoursTuesday);
+                $("#we").val(location.openingHoursWednesday);
+                $("#th").val(location.openingHoursThursday);
+                $("#fr").val(location.openingHoursFriday);
+                $("#sa").val(location.openingHoursSaturday);
+                $("#su").val(location.openingHoursSunday);
+
+                // change values in organisation detail
+                $("#organisationName").text(location.name);
+                $("#organisationPostal").text(location.postal);
+                $("#organisationAddress").text(location.address);
+                $("#organisationCity").text(location.city);
+                $("#moOpen").text("mo: " +location.openingHoursMonday);
+                $("#tuOpen").text(location.openingHoursTuesday);
+                $("#weOpen").text(location.openingHoursWednesday);
+                $("#thOpen").text(location.openingHoursThursday);
+                $("#frOpen").text(location.openingHoursFriday);
+                $("#saOpen").text(location.openingHoursSaturday);
+                $("#suOpen").text(location.openingHoursSunday);
+            }
+        }
+    });
+}
+
 function addEmployee() {
     console.log("fadfas");
     document.addEmployee.submit(function(event){
@@ -89,8 +130,6 @@ function addEmployee() {
     });
 }
 
-
-
 $(document).ready(function () {
     let backendHostUrl = 'http://localhost:8081';
 
@@ -117,7 +156,9 @@ $(document).ready(function () {
                 $("#userID").val(user.email);
                 $("#userIDSales").val(user.email);
                 $("#userIDCSV").val(user.email);
-                getEmployees()
+                $("#userIDOrganisation").val(user.email);
+                getEmployees();
+                getLocation();
             } else {
 
             }
@@ -126,4 +167,27 @@ $(document).ready(function () {
 
     FirbaseInit();
     checkUser();
+});
+
+$("#editOrganisation").submit(function (e) {
+    let locationID = document.getElementById('locationId').value;
+    let userID = document.getElementById('userID').value;
+    let formdata =  $("#editOrganisation").serialize();
+    formdata.locationID = locationID;
+    formdata.userMail = userID;
+
+    let url = "/editOrganisation";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formdata,
+        success: function (data) {
+            alert(data);
+            location.reload(true);
+        }
+    });
+
+    console.log(formdata);
+    e.preventDefault();
 });

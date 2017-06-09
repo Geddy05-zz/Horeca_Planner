@@ -37,12 +37,9 @@
         </small>
         </h1>
         </div>
-        <ol class="breadcrumb">
-            <li class="active">
-                <i class="fa fa-dashboard"></i> Dashboard
-            </li>
-        </ol>
     </div>
+    <input type="hidden" name="locationId" id ="locationId">
+    <input type="hidden" name="userId" id ="userId">
 </div>
 <!-- /.row -->
 <div class="content">
@@ -94,6 +91,10 @@
                 </div>
                 <div class="panel-body">
                     <div id="salesChart"></div>
+                    <div id="salesChartNoData">
+                        <p> No data available first upload sales data.</p>
+                        <p> Data can be uploaded on the location detail screen</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,15 +121,15 @@
                         Barkeerpers: <div id="barkeepers_needed"></div><br/>
                         Kitchen: <div id="kitchen_needed"></div><br/>
                     </p>
-                    <h3> week overview employees needed:</h3>
-                    <div id="morris-sales-chart"></div>
-                    <div class="text-right">
-                        <%--<a href=" <%= "/location/" + locations.get(0).getId() + "/createSchedule" %> ">--%>
-                            <a href=" <%= "/locations" %> ">
-                            Create Schedule for this week
-                            <i class="fa fa-arrow-circle-right"></i>
-                        </a>
-                    </div>
+                    <%--<h3> week overview employees needed:</h3>--%>
+                    <%--<div id="morris-sales-chart"></div>--%>
+                    <%--<div class="text-right">--%>
+                        <%--&lt;%&ndash;<a href=" <%= "/location/" + locations.get(0).getId() + "/createSchedule" %> ">&ndash;%&gt;--%>
+                            <%--<a href=" <%= "/locations" %> ">--%>
+                            <%--Create Schedule for this week--%>
+                            <%--<i class="fa fa-arrow-circle-right"></i>--%>
+                        <%--</a>--%>
+                    <%--</div>--%>
                 </div>
             </div>
         </div>

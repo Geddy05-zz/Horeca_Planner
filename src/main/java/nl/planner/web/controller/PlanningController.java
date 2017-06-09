@@ -10,11 +10,10 @@ import nl.planner.machineLearning.roostering.Algorithm;
 import nl.planner.machineLearning.roostering.FitnessCalculator;
 import nl.planner.machineLearning.roostering.Population;
 import nl.planner.machineLearning.roostering.RosterIndividual;
-import nl.planner.persistence.Doa.LocationDOA;
+import nl.planner.persistence.DAO.LocationDAO;
 import nl.planner.persistence.entity.Employee;
 import nl.planner.persistence.entity.Location;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +53,7 @@ public class PlanningController {
         String mail = request.getParameter("userMail");
         String week = request.getParameter("weeknr");
         String locationID = locationId;
-        LocationDOA locationDOA = new LocationDOA();
+        LocationDAO locationDOA = new LocationDAO();
         Location location = locationDOA.getLocationFromId(mail, locationId);
 
         return location.getPlanning();
@@ -65,7 +64,7 @@ public class PlanningController {
 //
 //        String mail = request.getParameter("userMail");
 //
-//        LocationDOA locationDOA = new LocationDOA();
+//        LocationDAO locationDOA = new LocationDAO();
 //        Location location = locationDOA.getLocationFromId(user, locationId);
 //
 //        if (location == null) {
@@ -83,7 +82,7 @@ public class PlanningController {
     public String location(@PathVariable String locationId, HttpServletRequest request, Model model) {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
-        LocationDOA locationDOA = new LocationDOA();
+        LocationDAO locationDOA = new LocationDAO();
         Location location = locationDOA.getLocationFromId(user, locationId);
 
         location.setPlanning(new ArrayList<List<List<Employee[]>>>());
@@ -125,7 +124,7 @@ public class PlanningController {
         logger.info("Fitness: " + fittest.getFitness());
 
         // Save Schedule of the week
-        LocationDOA locationDOA = new LocationDOA();
+        LocationDAO locationDOA = new LocationDAO();
         Location location = locationDOA.getLocationFromId(userID, locationID);
 
         location.setPlanning(fittest.getWeek());

@@ -25,7 +25,14 @@ public class Location {
     private String name;
     private String address;
     private String city;
-    private String openingHours;
+    private String postal;
+    private String openingHoursMonday;
+    private String openingHoursTuesday;
+    private String openingHoursWednesday;
+    private String openingHoursThursday;
+    private String openingHoursFriday;
+    private String openingHoursSaturday;
+    private String openingHoursSunday;
     private List<Employee> employees;
 
     private String planning;
@@ -43,6 +50,22 @@ public class Location {
         this.planning = null;
     }
 
+    public void update(String name,
+                       String postal, String adress, String city,
+                       String mo, String tu, String we, String th,String fr,String sa, String su){
+        this.name = name;
+        this.postal = postal;
+        this.address = adress;
+        this.city = city;
+        this.openingHoursMonday = mo;
+        this.openingHoursTuesday = tu;
+        this.openingHoursWednesday = we;
+        this.openingHoursThursday = th;
+        this.openingHoursFriday = fr;
+        this.openingHoursSaturday = sa;
+        this.openingHoursSunday = su;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,13 +78,13 @@ public class Location {
         return name;
     }
 
-    public String getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
-    }
+//    public String getOpeningHours() {
+//        return openingHours;
+//    }
+//
+//    public void setOpeningHours(String openingHours) {
+//        this.openingHours = openingHours;
+//    }
 
     public void addEmployee(Employee employee) {
 
@@ -150,5 +173,39 @@ public class Location {
 
         return formattedList;
     }
+    public String getCity() {
+        return city;
+    }
 
+    public String getPostal() {
+        return postal;
+    }
+
+    public String getOpeningHoursMonday() {
+        return openingHoursMonday;
+    }
+
+    public String getOpeningHoursTuesday() {
+        return openingHoursTuesday;
+    }
+
+    public String getOpeningHoursWednesday() {
+        return openingHoursWednesday;
+    }
+
+    public String getOpeningHoursThursday() {
+        return openingHoursThursday;
+    }
+
+    public String getOpeningHoursFriday() {
+        return openingHoursFriday;
+    }
+
+    public String getOpeningHoursSaturday() {
+        return openingHoursSaturday;
+    }
+
+    public String getOpeningHoursSunday() {
+        return openingHoursSunday;
+    }
 }
