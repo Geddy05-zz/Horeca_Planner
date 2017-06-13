@@ -21,7 +21,7 @@ public class EmployeeDAO {
         Employee employee = new Employee(employeeId, name, priceHour, skills, availableWeekdays, ex, hoursInContract);
 
         location.addEmployee(employee);
-        ofy().save().entities(employee, location);
+        ofy().save().entities(employee, location).now();
 
         return employee;
     }
