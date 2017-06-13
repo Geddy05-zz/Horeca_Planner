@@ -35,7 +35,7 @@ public class DailySales {
 
     public DailySales(final long id,Long locationId, Date date,double sales, double residues, boolean isHoliday,int temperature){
 
-        this.locationKey = Key.create(Location.class,locationId);
+//        this.locationKey = Key.create(Location.class,locationId);
         this.id = id;
         this.sales = sales;
         this.residues = residues;

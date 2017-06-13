@@ -34,14 +34,10 @@ public class SQLDatabase {
     }
 
     protected static void createSalesTable() throws ServletException {
-        final String createTableSql = "CREATE TABLE IF NOT EXISTS "+databaseName
-                +" ( ID FLOAT NOT NULL AUTO_INCREMENT,location_key VARCHAR(255) NOT NULL "
-                + ", sales DOUBLE NOT NULL, timestamp DATETIME NOT NULL, weekday INT NOT NULL,"
-                + "residues DOUBLE NOT NULL, is_holiday BOOLEAN, temperature INT NOT NULL,"
-                + "PRIMARY KEY (ID) )";
+
 
         try (Connection conn = DriverManager.getConnection(getUrl())) {
-            conn.createStatement().executeUpdate(createTableSql);
+            conn.createStatement().executeUpdate(SQLQueries.createSalesTable);
             conn.close();
         } catch (SQLException e) {
             throw new ServletException("SQL error", e);

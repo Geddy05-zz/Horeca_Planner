@@ -29,15 +29,8 @@ public class Person {
     private String address = "";
     private Boolean isActivated = false;
 
-    public List<Long> getLocationKeys() {
-        return locationKeys;
-    }
-
-    public void addLocationKeys(Long locationKeys) {
-        this.locationKeys.add(locationKeys);
-    }
-
     private List<Long> locationKeys = new ArrayList<>(0);
+    private List<Long> logItemKeys = new ArrayList<>(0);
 
     private Person() {}
 
@@ -108,5 +101,21 @@ public class Person {
 
     public String getOverview() {
         return overview;
+    }
+
+    public List<Long> getLocationKeys() {
+        return locationKeys;
+    }
+
+    public List<Long> getLogItemKeys() {
+        return logItemKeys;
+    }
+
+    public void addLocationKeys(Long locationKeys) {
+        this.locationKeys.add(locationKeys);
+    }
+
+    public void addLogItemKeys(Long logKeys) {
+        this.logItemKeys.add(logKeys);
     }
 }

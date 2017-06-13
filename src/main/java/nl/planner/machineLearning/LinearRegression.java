@@ -6,17 +6,16 @@ public class LinearRegression {
      * The start function for triple exponential smoothing
      * @param data a list of doubles
      * @param alpha a smoothing factor
-     * @param beta
-     * @param gamma
-     * @param period
-     * @param numberOfPredictions
-     * @return
+     * @param beta a smoothing factor
+     * @param gamma a smoothing factor
+     * @param period the length of the season
+     * @param numberOfPredictions the amount of predictions you wanna make
+     * @return a list with forecasting values
      */
-
     public static Double[] forecast(Double[] data, double alpha, double beta, double gamma ,
                                     int period, int numberOfPredictions){
         // check if there is a valid data set
-        if(data[0] == null ){
+        if(data[0] == null || data.length < 14){
             return new Double[0];
         }
 
@@ -61,9 +60,12 @@ public class LinearRegression {
      */
     private static double initialTrend(Double[] data, int period){
         double sum = 0.0;
-
-        for(int i = 0; i < period; i++){
-            sum += (data[i + period] - data[i]) / period;
+        try{
+            for(int i = 0; i < period; i++){
+                sum += (data[i + period] - data[i]) / period;
+            }
+        }catch (Exception e){
+            return 0;
         }
         return sum / period;
     }

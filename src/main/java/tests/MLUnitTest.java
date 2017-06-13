@@ -9,6 +9,7 @@ public class MLUnitTest {
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
+
     @Before
     public void setUp() throws Exception {
         helper.setUp();

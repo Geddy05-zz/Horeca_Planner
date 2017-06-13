@@ -20,7 +20,8 @@ public class WeatherRequest {
     private static final String apiKey = "7a656824437c05f95bef2c574e9c2d42";
 
     /**
-     *
+     * This function do the call to the forecast.io api and retrieve
+     * weather forecast for the current day and next 6 days
      * @param latitude latitude of the location.
      * @param longitude longitude of the location.
      * @return list of weather objects.
@@ -28,17 +29,18 @@ public class WeatherRequest {
      */
     public List< Weather> getWeather(double latitude, double longitude)throws Exception{
 
+        // Create correct api url with apiKey , latitude and longitude
         String urlString = "https://api.forecast.io/forecast/"+apiKey+"/"
                 + String.valueOf(latitude) + ","
                 + String.valueOf(longitude);
 
+        // Create the connection
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
         connection.setRequestMethod("GET");
         connection.setRequestProperty("User-Agent", USER_AGENT);
 
-        // get request body
+        // Get request body
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String output;
         StringBuffer response = new StringBuffer();
@@ -48,7 +50,7 @@ public class WeatherRequest {
         }
         in.close();
 
-        // create json object
+        // Create json object
         JSONObject json = new JSONObject(response.toString());
 
         return handleGetResponse(json);
@@ -63,16 +65,18 @@ public class WeatherRequest {
      */
     private List< Weather> handleGetResponse(JSONObject json) throws JSONException {
 
-        // get array of daily weather forecast.
+        // Get array of daily weather forecast.
         JSONArray daily = json.getJSONObject("daily").getJSONArray("data");
         List<Weather> weatherForecast = new ArrayList<Weather>();
+
         for(int i = 0 ; i < daily.length() -1 ; i++) {
 
-            // create weather forecast object
+            // Create weather forecast object
             JSONObject today = daily.getJSONObject(i);
-            weatherForecast.add( new Weather(today.getString("summary"),
-                    (((today.getDouble("temperatureMin") - 32) * 5) / 9),
-                    (((today.getDouble("temperatureMax") - 32) * 5) / 9),
+            weatherForecast.add( new Weather(
+                    today.getString("summary"),
+                    (((today.getDouble("temperatureMin") - 32) * 5) / 9), // store temp in celsius
+                    (((today.getDouble("temperatureMax") - 32) * 5) / 9), // store temp in celsius
                     today.getDouble("precipIntensity"),
                     today.getDouble("precipProbability"),
                     today.getDouble("windSpeed"),
