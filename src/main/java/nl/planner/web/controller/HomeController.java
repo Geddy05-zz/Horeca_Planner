@@ -8,7 +8,9 @@ import nl.planner.ForecastService;
 import nl.planner.boot.Bootstrap;
 import nl.planner.boot.WeatherRequest;
 import nl.planner.persistence.DAO.LocationDAO;
+import nl.planner.persistence.DAO.PersonDAO;
 import nl.planner.persistence.entity.Location;
+import nl.planner.persistence.entity.LogItem;
 import nl.planner.persistence.entity.Person;
 import nl.planner.persistence.entity.Weather;
 import org.springframework.stereotype.Controller;
@@ -162,5 +164,19 @@ public class HomeController {
                 "\"waiters\": "+waiters+" ," +
                 "\"barkeepers\":  "+barkeepers+", " +
                 "\"kitchen\": "+kitchen+"}";
+    }
+
+    @RequestMapping(value = "/getLogItems", method = RequestMethod.GET)
+    public @ResponseBody List<LogItem> getLogItems(HttpServletRequest request, Model model){
+        String mail = request.getParameter("userMail");
+
+        PersonDAO.getPersonFromUserID(mail);
+
+        List<LogItem> logItems  = ofy().load().type(LogItem.class)
+                .ancestor(Key.create(Person.class, mail))
+                .list();
+
+        return logItems;
+
     }
 }

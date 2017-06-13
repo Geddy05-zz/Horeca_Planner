@@ -22,7 +22,7 @@
             </div>
             <div id="filterPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
-                    <form action="addEmployee" method="post">
+                    <form id="addEmployee"  method="post">
                         <input id="locationId" type="hidden" name="locationId" value="${locationId}">
                         <input id="userID" type="hidden" name="userID">
 
@@ -183,6 +183,7 @@
             </div>
             <div id="uploadPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
+                    <p>Upload in csv format with column names: id, date, sales, weekday, holiday, temp, weather</p>
                     <form class="form-horizontal" action="uploadCSV/${locationId}" method="POST"
                           enctype="multipart/form-data">
                         <div class="col-md-4 col-md-offset-4">
@@ -197,7 +198,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-md-offset-4">
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input class="btn btn-success" type="submit" value="Submit"/>
                             </div>
                         </div>
@@ -220,7 +221,7 @@
             <div id="salesPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
                     <form action="addSales" method="post">
-                        <input type="hidden" name="locationId" value="${locationId}">
+                        <input id= "" type="hidden" name="locationId" value="${locationId}">
                         <input id="userIDSales" type="hidden" name="userID">
 
                         <div class="form-group ">
@@ -240,9 +241,7 @@
                         </div>
                         <div class="form-group">
                             <div>
-                                <button class="btn btn-primary " name="submit" type="submit">
-                                    Submit
-                                </button>
+                                <input class="btn btn-primary " type="submit" name="submit"  >
                             </div>
                         </div>
                     </form>

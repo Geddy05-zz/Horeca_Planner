@@ -61,6 +61,45 @@ function setPanelUrl(locations){
     }
 }
 
+function getLogItems(user){
+    $.ajax({
+        type: "GET",
+        url:"/getLogItems",
+        data: {userMail: user.email},
+        async: true,
+        dataType: "json",
+        success: function(data){
+            console.log(data);
+            for(let i =0 ; i < data.length; i++) {
+                let log = data[i];
+                console.log(log.date);
+                date = UnixDateToDate(log.date);
+                let logHTML = `<tr> <td> ${date} </td> <td> ${log.message}</td></tr>`
+
+                $('#logList').append(logHTML);
+            }
+        }
+    });
+}
+
+function UnixDateToDate(unixDate){
+    var date = new Date(unixDate*1000);
+    console.log(date);
+// Hours part from the timestamp
+    var hours = date.getHours();
+// Minutes part from the timestamp
+    var minutes = "0" + date.getMinutes();
+// Seconds part from the timestamp
+    var seconds = "0" + date.getSeconds();
+
+    var month = date.getMonth() +1;
+    var day = date.getDay();
+
+// Will display time in 10:30:23 format
+    let formattedTime =  day+"/"+month+" "+hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    return formattedTime;
+}
+
 function getSales() {
     // $.ajax({
     //     url: '/getSales',
@@ -120,6 +159,7 @@ function getLocations(user){
             $("#userId").val(user.email);
             setPanelUrl(response);
             getForecast(user);
+            getLogItems(user);
             getSales();
             tour();
         }

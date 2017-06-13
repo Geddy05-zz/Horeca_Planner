@@ -48,7 +48,7 @@ public class DailySalesTest extends MLUnitTest {
 
     @Test
     public void getWeekday() throws Exception {
-        assertEquals("Weekday", 2, ds.getWeekday());
+        assertEquals("Weekday", 1, ds.getWeekday());
     }
 
 }

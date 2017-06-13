@@ -9,6 +9,7 @@ import nl.planner.boot.SQLQueries;
 import nl.planner.machineLearning.LinearRegression;
 import nl.planner.persistence.DAO.EmployeeDAO;
 import nl.planner.persistence.DAO.LocationDAO;
+import nl.planner.persistence.DAO.LogItemDAO;
 import nl.planner.persistence.DAO.PersonDAO;
 import nl.planner.persistence.entity.Person;
 import nl.planner.persistence.enums.Experience;
@@ -104,9 +105,7 @@ public class LocationController {
 
     @RequestMapping(value = "/location/{locationId}", method = RequestMethod.GET)
     public String location(@PathVariable String locationId, HttpServletRequest request, Model model) {
-//        if (request.getUserPrincipal() == null){
-//            return "redirect:/";
-//        }
+
         logger.info(locationId);
 
         List<String[]> forecastMap = doTES(Long.parseLong(locationId));
@@ -118,32 +117,29 @@ public class LocationController {
 
     @RequestMapping(value = "/location/getEmployees", method = RequestMethod.GET)
     public @ResponseBody
-    List<Employee> getEmployees(HttpServletRequest request, Model model) {
+    List<Employee> getEmployees(HttpServletRequest request) {
         String locationId = request.getParameter("locationID");
         String userID = request.getParameter("userMail");
 
         Location location = locationDOA.getLocationFromId(userID, locationId);
         logger.info(" get EMPLOYEES !!!!!!!!!!!!!!");
 
-        logger.info(location.getEmployees().toString());
         return location.getEmployees();
     }
 
     @RequestMapping(value = "/location/addEmployee", method = RequestMethod.POST)
-    public String addEmployee(HttpServletRequest request, Model model) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public void addEmployee(HttpServletRequest request, Model model) {
 
-        String locationId = request.getParameter("locationId");
-        String userID = request.getParameter("userID");
+        // get params from request
+        String locationId = request.getParameter("locationID");
+        String userID = request.getParameter("userMail");
         String name = request.getParameter("name");
-        String surname = request.getParameter("name1");
-        String dateOfBirth = request.getParameter("date");
         String[] skillsString = request.getParameterValues("skills");
         int experienceNr = Integer.parseInt(request.getParameter("experience"));
         String[] weekdaysA = request.getParameterValues("availableWeekdays");
         double price = Double.parseDouble(request.getParameter("price"));
         int contractHours = Integer.parseInt(request.getParameter("contractHours"));
-
-        logger.info("Add A Employee");
 
         // select boxes input to skill enum.
         Skill[] skills = new Skill[skillsString.length];
@@ -159,14 +155,14 @@ public class LocationController {
 
         // create the user and store in datastore.
         Location location = locationDOA.getLocationFromId(userID, locationId);
-        Employee employee = employeeDOA.createEmployee(location, name, price, skills, weekdaysAv, Experience.forValue(experienceNr), contractHours);
+        employeeDOA.createEmployee(location, name, price, skills, weekdaysAv, Experience.forValue(experienceNr), contractHours);
 
-        return "redirect:/location/" + location.getId();
     }
 
     @RequestMapping(value = "/location/deleteEmployee", method = RequestMethod.POST)
     public String deleteEmployee(HttpServletRequest request, Model model) {
 
+        // Get params from request
         String locationId = request.getParameter("locationId");
         String userID = request.getParameter("userID");
         String employeeId = request.getParameter("employeeId");
@@ -181,10 +177,10 @@ public class LocationController {
 
     //TODO: deal with correct date front-end and backend
     @RequestMapping(value = "/location/addSales", method = RequestMethod.POST)
-    public String addSalesOfDay(HttpServletRequest request, Model model) throws Exception {
+    public String  addSalesOfDay(HttpServletRequest request, Model model) throws Exception {
 
         String locationId = request.getParameter("locationId");
-        String UserId = request.getParameter("userIDSales");
+        String UserId = request.getParameter("userID");
         String sales = request.getParameter("number");
         String dateString = request.getParameter("date");
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -196,9 +192,9 @@ public class LocationController {
 
         storeSalesItem(date, Float.parseFloat(sales), weekday, holiday, temp, rain, locationId);
 
-        Location location = locationDOA.getLocationFromId(UserId, locationId);
+        LogItemDAO.createLocation(UserId,"Added sales for " + dateString);
 
-        model.addAttribute("location", location);
+        model.addAttribute("location", locationId);
         return "locationSettings";
     }
 
@@ -360,6 +356,7 @@ public class LocationController {
     @ResponseStatus(value = HttpStatus.OK)
     public void updateOrganisation(HttpServletRequest request) throws IOException, ParseException {
 
+        // get params from request
         String locationId = request.getParameter("locationId");
         String userID = request.getParameter("userID");
         String name = request.getParameter("name");

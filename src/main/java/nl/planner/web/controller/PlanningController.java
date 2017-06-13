@@ -11,6 +11,7 @@ import nl.planner.machineLearning.roostering.FitnessCalculator;
 import nl.planner.machineLearning.roostering.Population;
 import nl.planner.machineLearning.roostering.RosterIndividual;
 import nl.planner.persistence.DAO.LocationDAO;
+import nl.planner.persistence.DAO.LogItemDAO;
 import nl.planner.persistence.entity.Employee;
 import nl.planner.persistence.entity.Location;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,11 @@ public class PlanningController {
 
     @RequestMapping(value = "location/{locationId}/createSchedule", method = RequestMethod.POST)
     public String createSchedulePost(@PathVariable String locationId,HttpServletRequest request,Model model) {
-        // Add the task to the default queue.
 
         String mail = request.getParameter("userID");
-//        String locationID = request.getParameter("locationID");
+        LogItemDAO.createLocation(mail,"Start creating schedule");
 
+        // Add the task to the default queue.
         Bootstrap.queue.add(TaskOptions.Builder.withUrl("/worker/"+locationId)
                 .param("locationID", locationId)
                 .param("userID", mail));
@@ -96,39 +97,46 @@ public class PlanningController {
     @RequestMapping(value = "/worker/{locationID}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void createSchedule(@PathVariable String locationID,HttpServletRequest request) {
+
         String userID = request.getParameter("userID");
 
-        List<List<int[]>> planningFrame = createScheduleFrame(userID);
+        try {
 
-        Algorithm ga = new Algorithm(locationID, userID, planningFrame);
+            List<List<int[]>> planningFrame = createScheduleFrame(userID);
 
-        Population population = new Population(20, true, locationID, userID, planningFrame);
-        double fitness = population.getFittest().getFitness();
-        RosterIndividual fittest = population.getFittest();
+            Algorithm ga = new Algorithm(locationID, userID, planningFrame);
 
-        int generationCount = 0;
-        while (fitness > FitnessCalculator.getMaxFitness() && generationCount < 750) {
-            generationCount++;
-            logger.info("Generation: " + generationCount + " Fitness: " + population.getFittest().getFitness());
+            Population population = new Population(20, true, locationID, userID, planningFrame);
+            double fitness = population.getFittest().getFitness();
+            RosterIndividual fittest = population.getFittest();
 
-            population = ga.evolvePopulation(population, locationID);
-            fittest = population.getFittest();
-            if (Algorithm.isValidePlanning(fittest.week)) {
-                fitness = fittest.getFitness();
+            int generationCount = 0;
+            while (fitness > FitnessCalculator.getMaxFitness() && generationCount < 750) {
+                generationCount++;
+                logger.info("Generation: " + generationCount + " Fitness: " + population.getFittest().getFitness());
+
+                population = ga.evolvePopulation(population, locationID);
+                fittest = population.getFittest();
+                if (Algorithm.isValidePlanning(fittest.week)) {
+                    fitness = fittest.getFitness();
+                }
             }
+
+            // Print results in log for debugging
+            logger.info("Solution found!");
+            logger.info("Generation: " + generationCount);
+            logger.info("Fitness: " + fittest.getFitness());
+
+            // Save Schedule of the week
+            LocationDAO locationDOA = new LocationDAO();
+            Location location = locationDOA.getLocationFromId(userID, locationID);
+
+            location.setPlanning(fittest.getWeek());
+            ofy().save().entity(location).now();
+            LogItemDAO.createLocation(userID, "Created a Schedule");
+        }catch (Exception e){
+            LogItemDAO.createLocation(userID,"Not enough employees or data");
         }
-
-        // Print results in log for debugging
-        logger.info("Solution found!");
-        logger.info("Generation: " + generationCount);
-        logger.info("Fitness: " + fittest.getFitness());
-
-        // Save Schedule of the week
-        LocationDAO locationDOA = new LocationDAO();
-        Location location = locationDOA.getLocationFromId(userID, locationID);
-
-        location.setPlanning(fittest.getWeek());
-        ofy().save().entity(location).now();
     }
 
     private List<List<int[]>> createScheduleFrame(String userID) {

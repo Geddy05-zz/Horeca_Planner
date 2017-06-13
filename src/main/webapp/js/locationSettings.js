@@ -88,20 +88,20 @@ function getLocation(){
                 $("#organisationAddress").text(location.address);
                 $("#organisationCity").text(location.city);
                 $("#moOpen").text("mo: " +location.openingHoursMonday);
-                $("#tuOpen").text(location.openingHoursTuesday);
-                $("#weOpen").text(location.openingHoursWednesday);
-                $("#thOpen").text(location.openingHoursThursday);
-                $("#frOpen").text(location.openingHoursFriday);
-                $("#saOpen").text(location.openingHoursSaturday);
-                $("#suOpen").text(location.openingHoursSunday);
+                $("#tuOpen").text("tu: " +location.openingHoursTuesday);
+                $("#weOpen").text("we: " +location.openingHoursWednesday);
+                $("#thOpen").text("th: " +location.openingHoursThursday);
+                $("#frOpen").text("fr: " +location.openingHoursFriday);
+                $("#saOpen").text("sa: " +location.openingHoursSaturday);
+                $("#suOpen").text("su: " +location.openingHoursSunday);
             }
         }
     });
 }
 
-function addEmployee() {
-    console.log("fadfas");
-    document.addEmployee.submit(function(event){
+
+
+$("#addEmployee").submit(function(event){
         let locationID = document.getElementById('locationId').value;
         let userID = document.getElementById('userID').value;
 
@@ -117,18 +117,21 @@ function addEmployee() {
             'contractHours'             : $('input[name=contractHours]').val(),
         };
 
+        console.log(formData);
+
         $.ajax({
             type: "POST",
             url: "/location/addEmployee",
             data: formData,
-            async: true,
             dataType: "json",
             success: function (employeees) {
-                getEmployees()
+                location.reload(true);
             }
         });
-    });
-}
+    event.preventDefault();
+    location.reload(true);
+});
+
 
 $(document).ready(function () {
     let backendHostUrl = 'http://localhost:8081';

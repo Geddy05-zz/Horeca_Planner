@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LocationDAO {
 
-    public void createLocation(String userID, String name, String adress ,String city){
+    public static Location createLocation(String userID, String name, String adress ,String city){
 
         Key<Person> personKey = Key.create(Person.class,userID);
         final Key<Location> locationKey = factory().allocateId(personKey,Location.class);
@@ -22,6 +22,7 @@ public class LocationDAO {
 
         person.addLocationKeys(locationId);
         ofy().save().entities(person,location).now();
+        return location;
     }
 
     public static void updateLocation(String userID, String  locationId, String name,

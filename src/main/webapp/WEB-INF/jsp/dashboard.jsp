@@ -45,9 +45,9 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-green" id="Schedule">
+            <div class="panel panel-green" id="SchedulePanel">
                 <div class="panel-heading">
-                    <a class="whiteLink" id ="schedule" href="#">
+                    <a class="whiteLink" id ="schedule" href="/locations">
                     <div class="row">
                         <div class="col-xs-3">
                             <i class="fa fa-table fa-5x"></i>
@@ -64,7 +64,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="panel panel-yellow">
                 <div class="panel-heading">
-                    <a class="whiteLink" id ="detail" href="#">
+                    <a class="whiteLink" id ="detail" href="/locations">
                         <div class="row">
                             <div class="col-xs-3">
                                 <i class="fa fa-building-o fa-5x"></i>
@@ -102,7 +102,7 @@
     <!-- /.row -->
 
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i> Number of employees needed</h3>
@@ -121,65 +121,10 @@
                         Barkeerpers: <div id="barkeepers_needed"></div><br/>
                         Kitchen: <div id="kitchen_needed"></div><br/>
                     </p>
-                    <%--<h3> week overview employees needed:</h3>--%>
-                    <%--<div id="morris-sales-chart"></div>--%>
-                    <%--<div class="text-right">--%>
-                        <%--&lt;%&ndash;<a href=" <%= "/location/" + locations.get(0).getId() + "/createSchedule" %> ">&ndash;%&gt;--%>
-                            <%--<a href=" <%= "/locations" %> ">--%>
-                            <%--Create Schedule for this week--%>
-                            <%--<i class="fa fa-arrow-circle-right"></i>--%>
-                        <%--</a>--%>
-                    <%--</div>--%>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="panel panel-default" id="Tasks-Panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">28-03-2017</span>
-                            <i class="fa fa-fw fa-truck"></i> Realisatie invoeren
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">01-04-2017</span>
-                            <i class="fa fa-fw fa-comment"></i> Prognose aangepast herzie planning
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">02-04-2017</span>
-                            <i class="fa fa-fw fa-comment"></i> Verandereing weersverwachting, herzie planning
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">10-04-2017</span>
-                            <i class="fa fa-fw fa-calendar"></i> Personeel plannen
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">11-04-2017</span>
-                            <i class="fa fa-fw fa-calendar"></i> Personeel plannen
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">12-04-2017</span>
-                            <i class="fa fa-fw fa-calendar"></i> Personeel plannen
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">13-04-2017</span>
-                            <i class="fa fa-fw fa-calendar"></i> Personeel plannen
-                        </a>
-                        <a href="#" class="list-group-item">
-                            <span class="badge badge-info">14-04-2017</span>
-                            <i class="fa fa-fw fa-calendar"></i> Personeel plannen
-                        </a>
-                    </div>
-                    <div class="text-right">
-                        <%--<a href="#">View All Activity <i class="fa fa-arrow-circle-right"></i></a>--%>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="panel panel-default" id="Logbook">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-terminal fa-fw"></i> Logbook</h3>
@@ -193,39 +138,8 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>27-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>27-03-2017</td>
-                                <td>Personeel geplanned </td>
-                            </tr>
-                            <tr>
-                                <td>26-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>25-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>24-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>23-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>22-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
-                            <tr>
-                                <td>21-03-2017</td>
-                                <td>Realisatie ingevoerd</td>
-                            </tr>
+                            <tbody id="logList">
+
                             </tbody>
                         </table>
                     </div>
