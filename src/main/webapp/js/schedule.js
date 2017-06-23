@@ -15,73 +15,73 @@ function lastWeek() {
 }
 
 function drawSchedule(json) {
-    let html = "<div class='row'><br\/>";
+    // let html = "<div class='row'><br\/>";
+    let weekday = 0;
     if (json.length > 0) {
-        for (var day in json) {
+        for (var i = 0 ; i < json.length; i++) {
             weekday++;
-            html += getWeekname(weekday);
-            html += getDaySchedule(day);
+            var dayName = getWeekname(weekday);
+            // html += "<h2>"+dayName+"</h2>";
+            getDaySchedule(json[i],dayName);
+            // html += "</div>"
         }
     }
-    console.log(html);
-    return html;
+    // $('#schedule').html(html);
 }
 
 function getWeekname(day){
     if(day === 1){
-    return "<h2>Monday</h2>"
+    return "Monday"
     }else if(day === 2){
-        return "<h2>Tuesday</h2>"
+        return "Tuesday"
     }else if(day === 3){
-        return "<h2>Wednesday</h2>"
+        return "Wednesday"
     }else if(day === 4){
-        return "<h2>Thursday</h2>"
+        return "Thursday"
     }else if(day === 5){
-        return "<h2>Friday</h2>"
+        return "Friday"
     } else if(day === 6){
-        return "<h2>Saturday</h2>"
+        return "Saturday"
     } else {
-        return "<h2>Sunday</h2>"
+        return "Sunday"
     }
 }
 
-function getDaySchedule(day){
-    let html ="<div class='col-md-6'>";
-    let count = 0;
+function getDaySchedule(day,weekday){
 
-    // loop shifts
-    for (var shift in day) {
-        count++;
-        // name correct shift
-        if(count === 1){
-            html+= "<h4>Middag:</h4><table>";
-        }else{
-            html+= "<br/><h4>Avond:</h4><table>";
+    // Loop shifts.
+    for (let i = 0 ; i < day.length; i++) {
+
+        let label = "16:00 - 22:00" ;
+        let table;
+
+        if(i === 0){
+            label = "10:00 - 16:00"
         }
 
-        let typeCount = 0;
-        // loop for type of the shifts
-        for(let shiftType in shift) {
-            typeCount++;
+        // Loop for type of the shifts.
+        for(let j = 0 ; j <  day[i].length; j++)  {
 
-            if (typeCount === 1) {
-                html+= "<td>Waiter</td>";
-            }else if (typeCount === 2) {
-                html += "<td>Bar</td>";
+            // Load table from html.
+            if (j === 0) {
+                table = $("#waiter"+weekday);
+            }else if (j === 1) {
+                table = $("#bar"+weekday);
             }else{
-                html += "<td>Kitchen</td>";
+                table = $("#kitchen"+weekday);
             }
-            html += "<td>";
 
-            // loop for planned employees
-            for(let employee in shiftType) {
-                html+= "<button type='button' class='btn btn-primary' style='margin-left: 10px;margin-right: 10px'>"+
-                    employee.name+"</button>"
+            // Loop for planned employees if there is a table.
+            if(table){
+                for(let x = 0 ; x <  day[i][j].length; x++) {
+                    table.append("<tr><td>"+ day[i][j][x].name+"</td><td>"+label+"</td></tr>")
+                }
             }
         }
-        html+= "</td> </tr>";
     }
-    return html;
+
+    // Show schedule.
+    $('#newSchedule').removeClass('hidden');
 }
 
 function getSchedule(){

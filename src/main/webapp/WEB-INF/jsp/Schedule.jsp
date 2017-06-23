@@ -17,7 +17,7 @@
         planning = location.getPlanning();
     }
 %>
-<div class="row">
+<div class="row" style="visibility: hidden">
     <div class="col-md-3"></div>
     <div class="col-md-6 medium" >
         Week
@@ -38,9 +38,131 @@
         <input name="userID" id="userID" type="hidden" >
         <input id = "locationID" type="hidden" name="locationID" value=${locationId}>
 
-        <input  class="btn btn-success" type="submit" value="Submit" />
+        <input  class="btn btn-success" type="submit" value="Create a schedule" />
     </form>
 </div>
+
+<div class="row">
+    <p>The schedule is based on the following constraints:<br>
+        Employee works not longer than 8 hours. <br>
+        Employee works on the shift that match with their skills<br>
+        The experience of the group. What means that there is no shift with only very experienced employees
+        or with only new and/or employees with less experienced</p>
+</div>
+<div id="newSchedule" class="hidden">
+    <table class="col-md-12 schedule">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Monday</td>
+                <td>Tuesday</td>
+                <td>Wednesday</td>
+                <td>Thursday</td>
+                <td>Friday</td>
+                <td>Saturday</td>
+                <td>Sunday</td>
+            </tr>
+        </thead>
+        <tr>
+            <td class = "job-type">Waiter</td>
+            <td class="inner-table">
+                <table id="waiterMonday" class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterTuesday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterWednesday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterThursday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterFriday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterSaturday"  class="no-border">
+
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="waiterSunday"  class="no-border">
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class = "job-type">Bar</td>
+            <td class="inner-table">
+                <table id="barMonday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barTuesday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barWednesday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barThursday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barFriday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barSaturday" class="no-border">
+
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="barSunday" class="no-border">
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class = "job-type">Kitchen</td>
+            <td class="inner-table">
+                <table id="kitchenMonday"  class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenTuesday" class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenWednesday" class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenThursday" class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenFriday" class="no-border">
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenSaturday" class="no-border">
+
+                </table>
+            </td>
+            <td class="inner-table">
+                <table id="kitchenSunday" class="no-border">
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="schedule"></div>
 <%
     }
 %>

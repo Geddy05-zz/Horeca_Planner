@@ -34,23 +34,23 @@ public class Population {
         return individuals[index];
     }
 
-    public RosterIndividual getFittest() {
+    public RosterIndividual getFittest(String locationID, String userID) {
         RosterIndividual fittest = individuals[0];
         // Loop through individuals to find fittest
         for (int i = 0; i < size(); i++) {
-            if (fittest.getFitness() >= getIndividual(i).getFitness()) {
+            if (fittest.getFitness(locationID,userID) >= getIndividual(i).getFitness(locationID,userID)) {
                 fittest = getIndividual(i);
             }
         }
         return fittest;
     }
 
-    public int getWeakkestindex() {
+    public int getWeakkestindex(String locationID,String userID) {
         RosterIndividual weakkest = individuals[0];
         int index = 0;
         // Loop through individuals to find fittest
         for (int i = 0; i < size(); i++) {
-            if (weakkest.getFitness() <= getIndividual(i).getFitness()) {
+            if (weakkest.getFitness(locationID,userID) <= getIndividual(i).getFitness(locationID,userID)) {
                 weakkest = getIndividual(i);
                 index = i;
             }
@@ -58,11 +58,11 @@ public class Population {
         return index;
     }
 
-    public RosterIndividual getFittest(RosterIndividual fit) {
+    public RosterIndividual getFittest(RosterIndividual fit,String locationID,String userID) {
         RosterIndividual fittest = individuals[0];
         // Loop through individuals to find fittest
         for (int i = 0; i < size(); i++) {
-            if (fittest.getFitness() >= getIndividual(i).getFitness() && !getIndividual(i).equals(fit)) {
+            if (fittest.getFitness(locationID,userID) >= getIndividual(i).getFitness(locationID,userID) && !getIndividual(i).equals(fit)) {
                 fittest = getIndividual(i);
             }
         }

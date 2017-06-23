@@ -7,10 +7,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Horeca Planner</title>
+    <title>Horeca toolkit</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 ®
     <!-- Custom CSS -->
     <link href="/css/landing-page.css" rel="stylesheet">
@@ -117,7 +117,7 @@
                         kan worden waarop er slimmer ingekocht kan worden door het restaurant. </p>
                 </div>
                 <div class="col-lg-4 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" style="padding-top: 40%" src="img/ipad.png" alt="">
+                    <img class="img-responsive" style="padding-top: 40%" src="img/bar.jpg" alt="">
                 </div>
             </div>
 
@@ -147,7 +147,7 @@
                     </p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src="img/dog.png" alt="">
+                    <img class="img-responsive" src="img/pc.png" alt="">
                 </div>
             </div>
 
@@ -165,14 +165,14 @@
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <ul class="pricing p-red">
                         <li>
-                            <img src="http://bread.pp.ua/n/settings_r.svg" alt="">
+                            <img src="img/001-house.svg" alt="">
                             <big>Een locatie</big>
                         </li>
                         <li>Maak roosters voor één locatie</li>
                         <li>Omzetprognose</li>
                         <li>Maak planningen vanaf elk type scherm</li>
                         <li>
-                            <h3>€35</h3>
+                            <h3>€30</h3>
                             <span>per maand</span>
                         </li>
                         <li>
@@ -184,15 +184,15 @@
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <ul class="pricing p-blue">
                         <li>
-                            <img src="http://bread.pp.ua/n/settings_b.svg" alt="">
+                            <img src="img/002-flat.svg" alt="">
                             <big>Meerdere locaties</big>
                         </li>
                         <li>Maak roosters voor meerdere locaties</li>
                         <li>Omzetprognose</li>
                         <li>Maak planningen vanaf elk type scherm</li>
                         <li>
-                            <h3>€75</h3>
-                            <span>per maand</span>
+                            <h3>price on request</h3>
+                            <span></span>
                         </li>
                         <li>
                             <button id ="aanmelden">Aanmelden</button>

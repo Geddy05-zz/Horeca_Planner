@@ -10,7 +10,7 @@
 <div class="row">
     <%-- Folding barbuttons for adding data--%>
     <div class="col-lg-3">
-        <div class="panel panel-green">
+        <div class="panel panel-green" id="addEmployeePanel">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#filterPanel">Add employees</a>
@@ -22,7 +22,7 @@
             </div>
             <div id="filterPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
-                    <form id="addEmployee"  method="post">
+                    <form id="addEmployee"  method="POST">
                         <input id="locationId" type="hidden" name="locationId" value="${locationId}">
                         <input id="userID" type="hidden" name="userID">
 
@@ -44,7 +44,7 @@
 
                         <div class="form-group ">
                             <label class="control-label " for="date">
-                                Date
+                                Date of birth
                             </label>
                             <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
                         </div>
@@ -135,11 +135,14 @@
                             *
                         </span>
                             </label>
+                            <div class="popup" onclick="popUpPrice()" style="float: right; margin-right: 10px"><i class="fa fa-info" aria-hidden="true" style="color: #31b0d5"></i>
+                                <span class="popuptext" id="popUpPrice"> Price is inclusive labor cost.</span>
+                            </div>
                             <input class="form-control" id="price" name="price" type="text"/>
                         </div>
                         <div class="form-group ">
                             <label class="control-label requiredField" for="price">
-                                Price per hour
+                                Experience
                                 <span class="asteriskField">    *   </span>
                             </label>
                             <select name="experience">
@@ -148,16 +151,25 @@
                                 <option value="15">Medior</option>
                                 <option value="20">Senior</option>
                             </select>
+
+                            <div class="popup" onclick="popUpExperience()" style="float: right; margin-right: 10px"><i class="fa fa-info" aria-hidden="true" style="color: #31b0d5"></i>
+                                <span class="popuptext" id="popUpExperience">new - a trainee. <br>
+                                    Junior - employee with less experience. <br>
+                                    Medior - employee with average experience.<br>
+                                    Senior - employee with a lots of experience.
+
+                                </span>
+                            </div>
                         </div>
                         <div class="form-group ">
                             <label class="control-label requiredField" for="contractHours">
-                                Hours in contract
-                                <span class="asteriskField">
-                            *
-                        </span>
+                                Contract hours
+                            </label>
+                        </div>
+
                             </label>
                             <input class="form-control" id="contractHours" name="contractHours" type="text"/>
-                        </div>
+
                         <div class="form-group">
                             <div>
                                 <button class="btn btn-primary " name="submit" type="submit">
@@ -171,10 +183,10 @@
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="panel panel-yellow">
+        <div class="panel panel-yellow" id="UploadCSV">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#uploadPanel">Upload Csv</a>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#uploadPanel">Upload data</a>
                     <span class="pull-right panel-collapse-clickable" data-toggle="collapse" data-parent="#accordion"
                           href="#uploadPanel">
                         <i class="glyphicon glyphicon-chevron-down"></i>
@@ -183,32 +195,43 @@
             </div>
             <div id="uploadPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
-                    <p>Upload in csv format with column names: id, date, sales, weekday, holiday, temp, weather</p>
-                    <form class="form-horizontal" action="uploadCSV/${locationId}" method="POST"
-                          enctype="multipart/form-data">
-                        <div class="col-md-4 col-md-offset-4">
-                            <div class="form-group">
-                                <input id="userIDCSV" type="hidden" name="userID">
-                                <div class="input-group">
-                                    <div class="fileUpload btn btn-primary">
-                                        <span >Select file</span>
-                                        <input type="file" name="file" class="upload" />
+                    <div id="uploadFile">
+                        <p>Upload in csv format with columns: date, sales, weekday, holiday, temp, weather</p>
+                        <form class="form-horizontal" id = 'csvForm' action="uploadCSV/${locationId}" method="POST"
+                              enctype="multipart/form-data">
+                            <div class="col-md-4 col-md-offset-4">
+                                <div class="form-group">
+
+                                    <input id="userIDCSV" type="hidden" name="userIDCSV">
+                                    <input id="locationIdCSV" type="hidden" name="locationId" value="${locationId}">
+
+                                    <div class="input-group">
+                                        <div class="fileUpload btn btn-primary">
+                                            <span >Select file</span>
+                                            <input type="file" name="file" class="upload" accept=".csv" class="required" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4 col-md-offset-4">
-                            <div class="input-group">
-                                <input class="btn btn-success" type="submit" value="Submit"/>
+                            <div class="col-md-10 col-md-offset-1" id="alertViewCSV">
+
                             </div>
-                        </div>
-                    </form>
+
+                            <div class="col-md-4 col-md-offset-4">
+                                <div class="input-group">
+                                    <input class="btn btn-success" type="submit" value="Submit"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div id="spinner"></div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="panel panel-red">
+        <div class="panel panel-red" id="addSalesPanel">
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#salesPanel">Add sales data</a>
@@ -220,15 +243,15 @@
             </div>
             <div id="salesPanel" class="panel-collapse panel-collapse collapse">
                 <div class="panel-body">
-                    <form action="addSales" method="post">
+                    <form id="addSales" action="addSales" method="post">
                         <input id= "" type="hidden" name="locationId" value="${locationId}">
                         <input id="userIDSales" type="hidden" name="userID">
 
                         <div class="form-group ">
-                            <label class="control-label " for="date">
+                            <label class="control-label " for="dates">
                                 Date
                             </label>
-                            <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
+                            <input class="form-control" id="dates" name="dates" placeholder="DD/MM/YYYY" type="text"/>
                         </div>
                         <div class="form-group ">
                             <label class="control-label requiredField" for="number">
@@ -239,9 +262,14 @@
                             </label>
                             <input class="form-control" id="number" name="number" type="text"/>
                         </div>
+                        <div id="alertView">
+
+                        </div>
                         <div class="form-group">
                             <div>
-                                <input class="btn btn-primary " type="submit" name="submit"  >
+                                <button class="btn btn-primary " name="submit" type="submit">
+                                    Submit
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -384,7 +412,6 @@
                 <label>Organisation name:</label>
             </div>
             <div class="col-md-8" id="organisationName">
-                Incentro
             </div>
         </div>
         <div class="col-lg-12">
@@ -392,7 +419,7 @@
                 <label>Postal code:</label>
             </div>
             <div class="col-md-8" id="organisationPostal">
-                5555 LL
+                n/a
             </div>
         </div>
         <div class="col-lg-12">
@@ -400,7 +427,7 @@
                 <label>Adress:</label>
             </div>
             <div class="col-md-8" id="organisationAddress">
-                Papendorpseweg 107
+                n/a
             </div>
         </div>
         <div class="col-lg-12">
@@ -408,7 +435,7 @@
                 <label>City:</label>
             </div>
             <div class="col-md-8" id="organisationCity">
-                Utrecht
+                n/a
             </div>
         </div>
         <div class="col-lg-12">
@@ -417,13 +444,13 @@
             </div>
             <div class="col-md-8">
                 <ul style="list-style-type:none; padding: 0">
-                    <li id="moOpen">mo: 14:00 - 20:00</li>
-                    <li id="tuOpen">tu: 12:00 - 20:00</li>
-                    <li id="weOpen">we: 12:00 - 21:00</li>
-                    <li id="thOpen">th: 12:00 - 23:00</li>
-                    <li id="frOpen">fr: 12:00 - 23:00</li>
-                    <li id="saOpen">sa: 12:00 - 23:00</li>
-                    <li id="suOpen">su: 12:00 - 21:00</li>
+                    <li id="moOpen"></li>
+                    <li id="tuOpen"></li>
+                    <li id="weOpen"></li>
+                    <li id="thOpen"></li>
+                    <li id="frOpen"></li>
+                    <li id="saOpen"></li>
+                    <li id="suOpen"></li>
                 </ul>
             </div>
         </div>
@@ -436,8 +463,11 @@
             <div class="col-md-4">
                 <label>Name:</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label>Skils:</label>
+            </div>
+            <div class="col-md-3">
+                <label>contract hours:</label>
             </div>
         </div>
         <div id="employeeList">

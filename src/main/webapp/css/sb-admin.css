@@ -182,82 +182,78 @@ ul.alert-dropdown {
 }
 
 .panel-green {
-    border-color: #5cb85c;
+    border-color: #377303;
 }
 
 .panel-green > .panel-heading {
-    border-color: #5cb85c;
+    border-color: #377303;
     color: #fff;
-    background-color: #5cb85c;
+    background-color: #377303;
 }
 
 .panel-green > a {
-    color: #5cb85c;
+    color: #377303;
 }
 
 .panel-green > a:hover {
-    color: #3d8b3d;
+    color: #377303;
 }
 
 .panel-red {
-    border-color: #d9534f;
+    border-color: #A60204;
 }
 
 .panel-red > .panel-heading {
-    border-color: #d9534f;
+    border-color: #A60204;
     color: #fff;
-    background-color: #d9534f;
+    background-color: #A60204;
 }
 
 .panel-red > a {
-    color: #d9534f;
+    color: #A60204;
 }
 
 .panel-red > a:hover {
-    color: #d9534f;
+    color: #A60204;
 }
 
 .panel-blue {
-    border-color: #5bc0de;
+    border-color: #245591;
 }
 
 .panel-blue > .panel-heading {
-    border-color: #5bc0de;
+    border-color: #245591;
     color: #fff;
-    background-color: #5bc0de;
+    background-color: #245591;
 }
 
 .panel-blue > a {
-    color: #5bc0de;
+    color: #fff;
 }
 
 .panel-blue > a:hover {
-    color: #428BCA;
+    color: #245591;
 }
 
 .panel-yellow {
-    border-color: #f0ad4e;
+    border-color: #D96704;
 }
 
 .panel-yellow > .panel-heading {
-    border-color: #f0ad4e;
+    border-color: #D96704;
     color: #fff;
-    background-color: #f0ad4e;
+    background-color: #D96704;
 }
 
 .panel-yellow > a {
-    color: #f0ad4e;
+    color: #D96704;
 }
 
 .panel-yellow > a:hover {
-    color: #df8a13;
+    color: #D96704;
 }
 
 th, td {
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 5px;
-    padding-top: 5px;
     text-align: left;
 }
 
@@ -327,3 +323,128 @@ a.whiteLink :hover {
     opacity: 0;
     filter: alpha(opacity=0);
 }
+
+/* Popup container */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.popup .popuptext {
+    visibility: hidden;
+    width: 260px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+
+.no-border{
+    border: 0px solid black;
+    position: relative;
+/*  display: block;  */
+    /*margin: 10px auto;*/
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.no-border tr {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+}
+
+.no-border tr td {
+    margin: 0;
+    padding: 4px 8px;
+    border: 0;
+}
+
+.no-border tbody tr:nth-child(2n+2) {
+    background-color: #EEE;
+}
+.inner-table{
+    vertical-align:top;
+}
+
+.inner-table tbody td{
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    text-align: center;
+}
+
+.selector-black{
+    color: #1a1a1a;
+    border-bottom-color: #1a1a1a;
+}
+
+.schedule thead tr {
+    background-color: #245591;
+    color: #ffffff;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.schedule thead td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.job-type{
+    vertical-align: middle;
+}
+
+.schedule tbody td {
+    text-align: center;
+}
+
+.day-schedule{
+    vertical-align:top;
+}
+
+.hidden { display: none; }

@@ -22,24 +22,16 @@
     <div class="col-lg-12">
         <div class="page-header">
         <h1 >
-            Dashboard <small>for location:
-                <%--<select name="locations" id="locations" value="1">--%>
-                    <%--<%--%>
-                        <%--if(locations != null){--%>
-                            <%--for(Location loc: locations){--%>
-                    <%--%>--%>
-                    <%--<option value=<%= loc.getId()%>><%= loc.getName()%></option>--%>
-                    <%--<%--%>
-                            <%--};--%>
-                        <%--}--%>
-                    <%--%>--%>
-                <%--</select>--%>
-        </small>
+            Dashboard
+            <small>for location:
+                <span id="locationSelector" class="selector-black">
+                </span>
+            </small>
         </h1>
-        </div>
     </div>
     <input type="hidden" name="locationId" id ="locationId">
     <input type="hidden" name="userId" id ="userId">
+</div>
 </div>
 <!-- /.row -->
 <div class="content">
@@ -47,10 +39,10 @@
         <div class="col-lg-3 col-md-6">
             <div class="panel panel-green" id="SchedulePanel">
                 <div class="panel-heading">
-                    <a class="whiteLink" id ="schedule" href="/locations">
+                    <a class="whiteLink" id ="schedule" href="/location/${locationId}/getSchedule">
                     <div class="row">
                         <div class="col-xs-3">
-                            <i class="fa fa-table fa-5x"></i>
+                            <i class="fa fa-table fa-4x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">Schedule</div>
@@ -62,7 +54,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-yellow">
+            <div class="panel panel-yellow" id="step1">
                 <div class="panel-heading">
                     <a class="whiteLink" id ="detail" href="/locations">
                         <div class="row">
@@ -107,20 +99,28 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i> Number of employees needed</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="panelEmployeeDemand">
                     <div class="text-center">
                         <i class="fa fa-fw fa-calendar"></i>
                         Select a date
                         <input type="text" id="datepicker">
                     </div>
+                    <div id="numberOfEmployees">
                     <br />
                     <p>
                     <h3>Number of employees needed based on sales: </h3> <br/>
-
                         Waiters : <div id="waiters_needed"></div><br/>
-                        Barkeerpers: <div id="barkeepers_needed"></div><br/>
+                        Barkeepers: <div id="barkeepers_needed"></div><br/>
                         Kitchen: <div id="kitchen_needed"></div><br/>
                     </p>
+                    </div>
+                    <p id="noDataEmployee"><h3>No data available</h3></p>
+                    <div class="text-right" style="float:right;">
+                        <a id ="scheduleLink" href="/location/${locationId}/getSchedule">
+                            View Schedule
+                            <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,9 +143,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-right">
-                        <a href="#">View Logbook<i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
+                    <%--<div class="text-right">--%>
+                        <%--<a href="#">View Logbook<i class="fa fa-arrow-circle-right"></i></a>--%>
+                    <%--</div>--%>
                 </div>
             </div>
         </div>
@@ -239,80 +239,10 @@
     </div>
     <% }%>
 </div>
-<link rel="stylesheet" href="/css/bootstrap-tour.min.css">
-<script src="/js/bootstrap-tour.min.js"></script>
-<script src="/js/dashboard.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src="/js/dashboard.js"></script>
 <script>
-    <%--<%--%>
-    <%--List<String[]>  forecast = (List<String[]> ) request.getAttribute("forecast");--%>
-    <%--List<String[]>  weekForecast = (List<String[]> ) request.getAttribute("weekForecast");--%>
-    <%--%>--%>
-
-    <%--new Morris.Line({--%>
-        <%--// ID of the element in which to draw the chart.--%>
-        <%--element: 'salesChart',--%>
-        <%--// Chart data records -- each entry in this array corresponds to a point on--%>
-        <%--// the chart.--%>
-        <%--data: [--%>
-            <%--<%--%>
-            <%--int i = 0;--%>
-            <%--if(forecast.size() > 60){--%>
-            <%--for(String[] map: forecast.subList(forecast.size()-60,forecast.size())){--%>
-
-                <%--if(map[1].equals("-")){--%>
-            <%--%>--%>
-            <%--{ year:  "<%= map[0] %>" ,  forecast: <%= map[2]%>},--%>
-            <%--<%--%>
-                <%--}else{--%>
-            <%--%>--%>
-            <%--{ year:  "<%= map[0] %>" , value:  <%= map[1] %>, forecast: <%= map[2]%>},--%>
-
-            <%--<%  }--%>
-            <%--}; }%>--%>
-        <%--],--%>
-        <%--// The name of the data record attribute that contains x-values.--%>
-        <%--xkey: 'year',--%>
-        <%--xLabels:"day",--%>
-
-        <%--pointSize:0,--%>
-        <%--// A list of names of data record attributes that contain y-values.--%>
-        <%--ykeys: ['value','forecast'],--%>
-        <%--// Labels for the ykeys -- will be displayed when you hover over the--%>
-        <%--// chart.--%>
-        <%--resize: true,--%>
-        <%--labels: ['Sales','Forecast']--%>
-    <%--});--%>
-
-    <%--new Morris.Line({--%>
-        <%--// ID of the element in which to draw the chart.--%>
-        <%--element: 'morris-sales-chart',--%>
-        <%--// Chart data records -- each entry in this array corresponds to a point on--%>
-        <%--// the chart.--%>
-        <%--data:[--%>
-            <%--<%--%>
-            <%--if(weekForecast.size() > 0){--%>
-             <%--for(String[] map: weekForecast){--%>
-                 <%--%>--%>
-            <%--{ date:  "<%=map[0]%>" , waiters:  <%=map[1]%>, barkeepers: <%=map[2]%>, kitchen: <%=map[3]%>},--%>
-
-            <%--<%--%>
-             <%--}}--%>
-            <%--%>--%>
-        <%--],--%>
-        <%--// The name of the data record attribute that contains x-values.--%>
-        <%--xkey: 'date',--%>
-        <%--xLabels:"day",--%>
-
-        <%--pointSize:0,--%>
-        <%--// A list of names of data record attributes that contain y-values.--%>
-        <%--ykeys: ['waiters','barkeepers','kitchen'],--%>
-        <%--// Labels for the ykeys -- will be displayed when you hover over the--%>
-        <%--// chart.--%>
-        <%--resize: true,--%>
-        <%--labels: ['waiters','barkeepers','kitchen']--%>
-    <%--});--%>
 
 </script>
 <!-- /.row -->

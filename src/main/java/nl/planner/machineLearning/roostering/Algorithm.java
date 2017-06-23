@@ -13,8 +13,8 @@ public class Algorithm {
 
     /* GA parameters */
     private static final double uniformRate = 0.50;
-    private static final double crossoverRate = 0.8;
-    private static final double mutationRate = 0.3;
+    private static final double crossoverRate = 0.7;
+    private static final double mutationRate = 0.1;
     private static final int tournamentSize = 6;
     private static final boolean elitism = true;
     public static String locationID;
@@ -38,13 +38,13 @@ public class Algorithm {
      * @param locationID the id of the location.
      * @return the new population\.
      */
-    public Population evolvePopulation(Population population,String locationID) {
+    public Population evolvePopulation(Population population,String locationID,String userID) {
         Population newPopulation = population;
 //        pool = new EmployeePool(locationID,userID);
 
         // Keep our best individual
         if (elitism) {
-            newPopulation.saveIndividual(0, population.getFittest());
+            newPopulation.saveIndividual(0, population.getFittest(locationID,userID));
         }
 
         // Crossover population
@@ -59,11 +59,11 @@ public class Algorithm {
         for (int i = elitismOffset; i < population.size(); i++) {
 
             if (Math.random() <= crossoverRate) {
-                RosterIndividual indiv1 = tournamentSelection(population, null,planningFrame);
-                RosterIndividual indiv2 = tournamentSelection(population, indiv1,planningFrame);
+                RosterIndividual indiv1 = tournamentSelection(population, null,planningFrame,locationID,userID);
+                RosterIndividual indiv2 = tournamentSelection(population, indiv1,planningFrame,locationID,userID);
 
-                RosterIndividual newIndiv = crossover(indiv1, indiv2);
-                newPopulation.saveIndividual(population.getWeakkestindex(), newIndiv);
+                RosterIndividual newIndiv = crossover(indiv1, indiv2,locationID,userID);
+                newPopulation.saveIndividual(population.getWeakkestindex(locationID,userID), newIndiv);
                 break;
             }
         }
@@ -85,7 +85,7 @@ public class Algorithm {
      * @param indiv2 second selected individual
      * @return the new individual
      */
-    private RosterIndividual crossover(RosterIndividual indiv1, RosterIndividual indiv2) {
+    private RosterIndividual crossover(RosterIndividual indiv1, RosterIndividual indiv2, String locationID,String userID) {
         RosterIndividual newSol = new RosterIndividual(indiv1.getWeek());
         // Crossover
         int dayOfweek = 0;
@@ -115,7 +115,7 @@ public class Algorithm {
             return newSol;
         }
 
-        if(indiv1.getFitness() <= indiv2.getFitness()){
+        if(indiv1.getFitness(locationID,userID) <= indiv2.getFitness(locationID,userID)){
             return indiv1;
         }
         return indiv2;
@@ -224,7 +224,8 @@ public class Algorithm {
      * @param indiv1 a selected individual from the previous tournament.
      * @return the winner from the tournament.
      */
-    private RosterIndividual tournamentSelection(Population pop, RosterIndividual indiv1, List<List<int[]>> planningFrame) {
+    private RosterIndividual tournamentSelection(Population pop, RosterIndividual indiv1, List<List<int[]>> planningFrame,
+                                                 String locationID,String userID) {
         // Create a tournament population
         Population tournament = new Population(tournamentSize, false,locationID,userID,planningFrame);
 
@@ -236,9 +237,9 @@ public class Algorithm {
 
         // Get the fittest
         if(indiv1 != null) {
-            return tournament.getFittest(indiv1);
+            return tournament.getFittest(indiv1,locationID,userID);
         }else{
-            return tournament.getFittest();
+            return tournament.getFittest(locationID,userID);
         }
     }
 }

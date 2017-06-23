@@ -1,6 +1,31 @@
 /**
  * Created by Geddy on 10-5-2017.
  */
+
+function getLocations(user) {
+    console.log(user);
+
+    $.ajax({
+        type: "GET",
+        url: "/getLocations",
+        data: {userMail: user},
+        dataType: "json",
+        success: function (response) {
+
+            let xTable=document.getElementById('locationsList');
+            console.log(response);
+
+            for(let i = 0; i < response.length ; i++) {
+                let tr=document.createElement('tr');
+                tr.innerHTML = "<td><a href = '/location/"+response[i].id+"'>"+response[i].name+"</a></td>"+
+                    "<td>"+ response[i].address +"</td>" +"<td>"+ response[i].city+"</td>";
+                xTable.appendChild(tr);
+            }
+        }
+    });
+}
+
+
 $(document).ready(function() {
     var backendHostUrl = 'http://localhost:8081';
 
@@ -25,33 +50,11 @@ $(document).ready(function() {
 
             if (user) {
                 $("#userID").val(user.email);
-                getLocations(user);
+                $("#userIDMain").val(user.email);
+                getLocations(user.email);
             } else {
 
                 // window.location = "/"
-            }
-        });
-    }
-
-    function getLocations(user) {
-        console.log(user.email);
-
-        $.ajax({
-            type: "GET",
-            url: "/getLocations",
-            data: {userMail: user.email},
-            dataType: "json",
-            success: function (response) {
-
-                let xTable=document.getElementById('locationsList');
-                console.log(response);
-
-                for(let i = 0; i < response.length ; i++) {
-                    let tr=document.createElement('tr');
-                    tr.innerHTML = "<td><a href = '/location/"+response[i].id+"'>"+response[i].name+"</a></td>"+
-                    "<td>"+ response[i].address +"</td>";
-                    xTable.appendChild(tr);
-                }
             }
         });
     }
@@ -60,17 +63,23 @@ $(document).ready(function() {
     checkUser();
 });
 
+function showSucces(){
+    var user = $("#userIDMain").val();
+    getLocations(user);
+    $("#alert").html(`<div id="savedLocation" class="alert alert-success" role="alert">
+                            <strong>Done!</strong> You successfully saved a location
+                        </div>`);
+
+}
+
 $("#addLocation").submit(function (e) {
     let url = "/locations";
-
+    e.preventDefault();
     $.ajax({
         type: "POST",
         url: url,
+        async:false,
         data: $("#addLocation").serialize(),
-        success: function (data) {
-            alert("Location is saved");
-            location.reload(true);
-        }
     });
-    e.preventDefault();
+    showSucces();
 });

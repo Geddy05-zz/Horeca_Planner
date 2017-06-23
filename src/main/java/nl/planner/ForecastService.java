@@ -12,23 +12,23 @@ import java.util.List;
  */
 public class ForecastService {
 
-    public static List<String[]> getForecast(String userID) {
+    public static List<String[]> getForecast(String userID,String locationId) {
         List<String[]> forecastMap;
         try {
-            if (Bootstrap.cache.containsKey(LocationDAO.listOfLocations(userID).get(0).getId())) {
-                long l = LocationDAO.listOfLocations(userID).get(0).getId();
-                forecastMap = (List<String[]>) Bootstrap.cache.get(l);
+            if (Bootstrap.cache.containsKey(LocationDAO.getLocationFromId(userID,locationId))){
+                long l = LocationDAO.getLocationFromId(userID,locationId).getId();
+                forecastMap = (List<String[]>) Bootstrap.cache.get(locationId);
                 if (forecastMap.size() < 1) {
-                    forecastMap = LocationController.doTES(LocationDAO.listOfLocations(userID).get(0).getId());
-                    Bootstrap.cache.put(LocationDAO.listOfLocations(userID).get(0).getId(), forecastMap);
+                    forecastMap = LocationController.doTES(LocationDAO.getLocationFromId(userID,locationId).getId());
+                    Bootstrap.cache.put(LocationDAO.getLocationFromId(userID,locationId).getId(), forecastMap);
                 }
             } else {
-                forecastMap = LocationController.doTES(LocationDAO.listOfLocations(userID).get(0).getId());
-                Bootstrap.cache.put(LocationDAO.listOfLocations(userID).get(0).getId(), forecastMap);
+                forecastMap = LocationController.doTES(LocationDAO.getLocationFromId(userID,locationId).getId());
+                Bootstrap.cache.put(LocationDAO.getLocationFromId(userID,locationId).getId(), forecastMap);
             }
         }catch (Exception e){
             try {
-                forecastMap = LocationController.doTES(LocationDAO.listOfLocations(userID).get(0).getId());
+                forecastMap = LocationController.doTES(LocationDAO.getLocationFromId(userID,locationId).getId());
             }catch (Exception ex){
                 forecastMap = new ArrayList<>();
             }

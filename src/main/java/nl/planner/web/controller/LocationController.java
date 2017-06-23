@@ -100,6 +100,7 @@ public class LocationController {
         List<Location> locations = locationDOA.listOfLocations(mail);
 
         model.addAttribute("locations", locations);
+        model.addAttribute("userID", mail);
         return "locations";
     }
 
@@ -120,7 +121,7 @@ public class LocationController {
     List<Employee> getEmployees(HttpServletRequest request) {
         String locationId = request.getParameter("locationID");
         String userID = request.getParameter("userMail");
-
+        ofy().clear();
         Location location = locationDOA.getLocationFromId(userID, locationId);
         logger.info(" get EMPLOYEES !!!!!!!!!!!!!!");
 
@@ -135,9 +136,9 @@ public class LocationController {
         String locationId = request.getParameter("locationID");
         String userID = request.getParameter("userMail");
         String name = request.getParameter("name");
-        String[] skillsString = request.getParameterValues("skills");
+        String[] skillsString = request.getParameterValues("skills[]");
         int experienceNr = Integer.parseInt(request.getParameter("experience"));
-        String[] weekdaysA = request.getParameterValues("availableWeekdays");
+        String[] weekdaysA = request.getParameterValues("availableWeekdays[]");
         double price = Double.parseDouble(request.getParameter("price"));
         int contractHours = Integer.parseInt(request.getParameter("contractHours"));
 
@@ -198,43 +199,48 @@ public class LocationController {
         return "locationSettings";
     }
 
-    @RequestMapping(value = "/location/uploadCSV/{locationId}", method = RequestMethod.POST)
-    public String uploadCSV(@PathVariable String locationId, HttpServletRequest request, Model model) throws IOException, ParseException {
-
-        String user = request.getParameter("userID");
+    @RequestMapping(value = "/location/uploadCSV/{locationId}/{user}", method = RequestMethod.POST)
+    public @ResponseBody Boolean uploadCSV(@PathVariable String locationId, @PathVariable String user, HttpServletRequest request, Model model) throws IOException, ParseException {
 
         CSVReader reader = new CSVReader(request.getReader());
 
         List myEntries = reader.readAll();
         Boolean header = true;
+        Boolean success = false;
 
-        // Read csv and store the values in the SQL datastore
-        for (int i = 0; i < myEntries.size(); i++) {
-            String[] l = (String[]) myEntries.get(i);
-            if (l.length > 1) {
-                if (!header) {
+        try {
+            // Read csv and store the values in the SQL datastore
+            for (int i = 0; i < myEntries.size(); i++) {
+                String[] l = (String[]) myEntries.get(i);
+                if (l.length > 1) {
+                    if (!header) {
 
-                    //0 index 1:date 2:sales 3:weekday 4:holiday 5:temp 6:weather
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                    Date date = formatter.parse(l[1]);
-                    float sales = Float.parseFloat(l[2]);
-                    int weekday = Integer.parseInt(l[3]);
-                    Boolean holiday = Boolean.parseBoolean(l[4]);
-                    int temp = Integer.parseInt(l[5]);
-                    float rain = Float.parseFloat(l[6]);
+                        //0 date 1:sales 2:weekday 3:holiday 4:temp 5:weather
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = formatter.parse(l[0]);
+                        float sales = Float.parseFloat(l[1]);
+                        int weekday = Integer.parseInt(l[2]);
+                        Boolean holiday = Boolean.parseBoolean(l[3]);
+                        int temp = Integer.parseInt(l[4]);
+                        float rain = Float.parseFloat(l[5]);
 
-                    // store data in sql database
-                    storeSalesItem(date, sales, weekday, holiday, temp, rain, locationId);
-
-                } else {
-                    header = false;
+                        // store data in sql database
+                        storeSalesItem(date, sales, weekday, holiday, temp, rain, locationId);
+                        success = true;
+                    } else {
+                        header = false;
+                    }
                 }
             }
+        }catch (Exception e){
+            success = false;
         }
 
+        LogItemDAO.createLocation(user,"Added sales from csv");
         model.addAttribute("location", locationId);
+        model.addAttribute("success", success);
 
-        return "locationSettings";
+        return success;
     }
 
 

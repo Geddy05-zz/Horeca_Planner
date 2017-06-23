@@ -17,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import java.io.FileNotFoundException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.*;
@@ -118,7 +121,8 @@ public class HomeController {
     @RequestMapping(value = "/dashboard/forecast", method = RequestMethod.GET,produces = "application/json")
     public @ResponseBody List<String[]> forecast (HttpServletRequest request) throws Exception {
         String mail = request.getParameter("userMail");
-        List<String[]> forecastMap = ForecastService.getForecast(mail);
+        String locationId = request.getParameter("locationId");
+        List<String[]> forecastMap = ForecastService.getForecast(mail,locationId);
 
         // return last  50 results
         if(forecastMap.size() > 50) {
@@ -138,13 +142,22 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/getEmployeeDemand/{date}", method = RequestMethod.GET,produces = "application/json")
-    public @ResponseBody String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model){
+    public @ResponseBody String employeeDemand(@PathVariable String date, HttpServletRequest request, Model model) throws ParseException {
 
         String mail = request.getParameter("userMail");
+        String locationId = request.getParameter("locationId");
+
 
         // Get forecast from mem cache
-        List<String[]> forecastMap = ForecastService.getForecast(mail);
+        List<String[]> forecastMap = ForecastService.getForecast(mail,locationId);
         String sales = "";
+
+        // format the date
+        DateFormat toFormat = new SimpleDateFormat("yyyy-MM-dd");
+        toFormat.setLenient(false);
+        DateFormat fromFormat = new SimpleDateFormat("dd-MM-yyyy");
+        fromFormat.setLenient(false);
+        date = toFormat.format(fromFormat.parse(date));
 
         // Get forecast for the selected day
         for(String[] strl : forecastMap){
@@ -153,6 +166,8 @@ public class HomeController {
                 sales = strl[2];
             }
         }
+
+        if (sales.equals("")){return "{}";}
 
         // Round values to integers
         int salesRounded = Math.round(Float.parseFloat(sales));
@@ -174,6 +189,9 @@ public class HomeController {
 
         List<LogItem> logItems  = ofy().load().type(LogItem.class)
                 .ancestor(Key.create(Person.class, mail))
+                .orderKey(true)
+                .order("date")
+                .limit(10)
                 .list();
 
         return logItems;

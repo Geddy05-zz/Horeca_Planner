@@ -79,8 +79,8 @@ public class RosterIndividual {
         return week.size();
     }
 
-    public double getFitness(){
-        return FitnessCalculator.getFitness(this);
+    public double getFitness(String locationID,String userID){
+        return FitnessCalculator.getFitness(this,locationID,userID);
     }
 
     /**

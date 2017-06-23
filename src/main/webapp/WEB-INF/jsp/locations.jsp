@@ -11,6 +11,7 @@
 --%>
 <jsp:include page="/layout/header.jsp"/>
 <div class="row">
+    <input id = " Main" type="hidden" name="userID">
     <div class="col-lg-1"></div>
     <div class="col-lg-10">
         <div class="panel panel-default">
@@ -24,6 +25,7 @@
                         <tr>
                             <th>Name</th>
                             <th>address</th>
+                            <th>city</th>
                         </tr>
                         </thead>
                         <tbody  id = "locationsList">
@@ -32,7 +34,11 @@
                     </table>
                 </div>
                 <br />
+                <div id="alert">
 
+                </div>
+                <script>
+                </script>
                 <form id="addLocation" class="form-horizontal" method="POST">
                     <fieldset>
 

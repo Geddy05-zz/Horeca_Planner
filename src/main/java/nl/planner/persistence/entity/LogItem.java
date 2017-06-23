@@ -3,6 +3,7 @@ package nl.planner.persistence.entity;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 import sun.rmi.runtime.Log;
 
@@ -20,6 +21,7 @@ public class LogItem {
     @Id
     private Long id;
     private String message;
+    @Index
     private Long date;
 
     private LogItem(){}

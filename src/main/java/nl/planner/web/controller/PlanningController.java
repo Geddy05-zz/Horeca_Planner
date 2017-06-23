@@ -62,16 +62,6 @@ public class PlanningController {
 
     @RequestMapping(value = "location/{locationId}/createSchedule", method = RequestMethod.GET)
     public String showSchedule(@PathVariable String locationId, Model model) {
-//
-//        String mail = request.getParameter("userMail");
-//
-//        LocationDAO locationDOA = new LocationDAO();
-//        Location location = locationDOA.getLocationFromId(user, locationId);
-//
-//        if (location == null) {
-//            return "redirect:/dashboard";
-//        }
-//        model.addAttribute("location", location);
 
         model.addAttribute("locationId", locationId);
 
@@ -102,30 +92,33 @@ public class PlanningController {
 
         try {
 
-            List<List<int[]>> planningFrame = createScheduleFrame(userID);
+            List<List<int[]>> planningFrame = createScheduleFrame(userID,locationID);
 
             Algorithm ga = new Algorithm(locationID, userID, planningFrame);
 
             Population population = new Population(20, true, locationID, userID, planningFrame);
-            double fitness = population.getFittest().getFitness();
-            RosterIndividual fittest = population.getFittest();
+            double fitness = population.getFittest(locationID,userID).getFitness(locationID,userID);
+            RosterIndividual fittest = population.getFittest(locationID,userID);
 
             int generationCount = 0;
-            while (fitness > FitnessCalculator.getMaxFitness() && generationCount < 750) {
+            while (fitness > FitnessCalculator.getMaxFitness() && generationCount < 1500) {
                 generationCount++;
-                logger.info("Generation: " + generationCount + " Fitness: " + population.getFittest().getFitness());
+                logger.info("Generation: " + generationCount + " Fitness: " +
+                        population.getFittest(locationID,userID)
+                                .getFitness(locationID,userID));
 
-                population = ga.evolvePopulation(population, locationID);
-                fittest = population.getFittest();
+                population = ga.evolvePopulation(population, locationID,userID);
+                fittest = population.getFittest(locationID,userID);
+
                 if (Algorithm.isValidePlanning(fittest.week)) {
-                    fitness = fittest.getFitness();
+                    fitness = fittest.getFitness(locationID,userID);
                 }
             }
 
             // Print results in log for debugging
             logger.info("Solution found!");
             logger.info("Generation: " + generationCount);
-            logger.info("Fitness: " + fittest.getFitness());
+            logger.info("Fitness: " + fittest.getFitness(locationID,userID));
 
             // Save Schedule of the week
             LocationDAO locationDOA = new LocationDAO();
@@ -139,9 +132,9 @@ public class PlanningController {
         }
     }
 
-    private List<List<int[]>> createScheduleFrame(String userID) {
+    private List<List<int[]>> createScheduleFrame(String userID, String locationId) {
 
-        List<String[]> forecastMap = ForecastService.getForecast(userID);
+        List<String[]> forecastMap = ForecastService.getForecast(userID,locationId);
 
         List<String[]> myLastForecast = forecastMap.subList(forecastMap.size() - 8, forecastMap.size() - 1);
 

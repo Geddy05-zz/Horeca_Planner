@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Horeca toolkit</title>
     <!-- Bootstrap Core CSS -->
     <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-tour.min.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
     <link href="/css/plugins/morris.css" rel="stylesheet">
@@ -15,6 +16,7 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="/js/bootstrap.js"></script>
 
     <!-- Custom Fonts -->
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -26,23 +28,17 @@
     <script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css">
 
-<%--<script src="/js/jquery.js"></script>--%>
+    <%-- intro tour--%>
+    <link type="text/css" rel="stylesheet" href="/css/plugins/introjs.css">
+    <script src="/js/plugins/intro.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/js/bootstrap.min.js"></script>
-
+    <%--<!-- Bootstrap Core JavaScript -->--%>
+    <%--<script src="/js/bootstrap.js"></script>--%>
+    <%--<script src="/js/bootstrap-tour.min.js"></script>--%>
 
     <!-- Custom CSS -->
     <link href="/css/sb-admin.css" rel="stylesheet">
-    <script>
-        function logOut(){
-            firebase.auth().signOut().then(function() {
-                window.location = "/";
-            }, function(error) {
-                console.log(error);
-            });
-        }
-    </script>
+
 
 </head>
 <body>
@@ -58,10 +54,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/dashboard">Horeca Planner</a>
+            <a class="navbar-brand" href="/dashboard">Horeca toolkit</a>
         </div>
         <!-- Top Menu Items -->
         <ul class="nav navbar-right top-nav">
+            <li id="helpItem">
+                <a id="help"><i class="fa fa-lg fa-question-circle" aria-hidden="true"></i> </a>
+            </li>
             <li >
                 <a onclick="logOut();" ><i class="fa fa-fw fa-sign-out"></i> log out</a>
             </li>
